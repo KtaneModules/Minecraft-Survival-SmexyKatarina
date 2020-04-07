@@ -14,6 +14,7 @@ public class MinecraftSurvival : MonoBehaviour {
 
 	public Material[] _dimensionMaterials;
 	public Material[] _swordMaterials;
+	public Material[] _mobMaterials;
 
 	public KMSelectable[] _actionButtons; // Inventory and dimensions and fighting
 	public KMSelectable[] _resourceButtons; // Resource buttons
@@ -32,8 +33,10 @@ public class MinecraftSurvival : MonoBehaviour {
 	public MeshRenderer[] _resourceButtonMeshes;
 	public MeshRenderer[] _inventoryButtonMeshes;
 	public MeshRenderer[] _moduleMeshes;
+	public MeshRenderer _mobIndicator;
 
 	public TextMesh _materialValueText;
+	public TextMesh _mobHealthIndicator;
 
 	// Specifically for Logging
 	static int _modIDCount = 0;
@@ -54,8 +57,8 @@ public class MinecraftSurvival : MonoBehaviour {
 	int[] _monsterHealth = new int[] { 30, 20, 15, 20, 20, 40, 30, 40, 50, 30, 500 };
 	int[] _monsterDamage = new int[] { 6, 4, 4, 20, 4, 6, 5, 8, 10, 5, 8 };
 	int[] _materialValues = new int[44];
-	int[] _swordDamages = new int[] { 5, 10, 15, 20 };
-	int[] _armorProc = new int[] { 5, 10 };
+	int[] _swordDamages = new int[] { 6, 9, 12, 15 };
+	int[] _armorProc = new int[] { 4, 8 };
 
 	string _gMonsterName = "";
 
@@ -94,7 +97,8 @@ public class MinecraftSurvival : MonoBehaviour {
 		foreach (KMSelectable inv in _allResourceInventoryIndicies) {
 			
 			inv.OnInteract += delegate () { if (_modSolved) { return false; } InventoryButton(inv); return false; };
-			inv.OnHighlight += delegate () { if (_isAnimating) { return; } UpdateAmountDisplay(inv); };
+			inv.OnHighlight += delegate () { if (_isAnimating) { return; } UpdateAmountDisplay(inv); return; };
+			inv.OnHighlightEnded += delegate () { _materialValueText.text = ""; return;  };
 		}
 		_resourceUntilFight = rand.Range(6,13);
 	}
@@ -139,7 +143,7 @@ public class MinecraftSurvival : MonoBehaviour {
 				if (_dimensionIndex == 2) {
 					break;
 				}
-				/*if (!_isEndUnlocked && _materialValues[18] >= 12)
+				if (!_isEndUnlocked && _materialValues[18] >= 12)
 				{
 					_materialValues[18] -= 12;
 					_isEndUnlocked = true;
@@ -152,7 +156,7 @@ public class MinecraftSurvival : MonoBehaviour {
 					GetComponent<KMBombModule>().HandleStrike();
 					Debug.LogFormat("[Minecraft Survival #{0}]: Strike! Tried to access The End without it being unlocked.", _modID);
 					break;
-				}*/
+				}
 				_dimensionIndex = 2;
 				UpdateModule();
 				break;
@@ -195,6 +199,8 @@ public class MinecraftSurvival : MonoBehaviour {
 	}
 
 	void ResourceButton(KMSelectable but) {
+		_playerHunger--;
+		UpdateHunger();
 		if (_playerHunger == 0) {
 			GetComponent<KMBombModule>().HandleStrike();
 			Debug.LogFormat("[Minecraft Survival #{0}]: Strike! You didnt have enough hunger to obtain resources.", _modID);
@@ -202,8 +208,6 @@ public class MinecraftSurvival : MonoBehaviour {
 			UpdateHunger();
 			return;
 		}
-		_playerHunger--;
-		UpdateHunger();
 		// Overworld: 42 19 20 21 22 23 25 24
 		// Nether: 34 26 27 28
 		// End: 29 25 30 31
@@ -663,6 +667,11 @@ public class MinecraftSurvival : MonoBehaviour {
 	}
 
 	void StartFightEventHandler() {
+		if ((_materialValues[11] == 0 || _materialValues[12] == 0 || _materialValues[13] == 0 || _materialValues[14] == 0) && !(_materialValues[11] >= 1 || _materialValues[12] >= 1 || _materialValues[13] >= 1 || _materialValues[14] >= 1)) {
+			Debug.LogFormat("[Minecraft Survival #{0}]: Fight did not start because you have no sword!", _modID);
+			_resourceUntilFight = rand.Range(2, 7);
+			return;
+		}
 		if (_dragonFightStarted) {
 			foreach (KMSelectable km in _resourceButtons) {
 				km.GetComponent<Renderer>().enabled = false;
@@ -695,15 +704,17 @@ public class MinecraftSurvival : MonoBehaviour {
 				_emptyHunger[i].enabled = false;
 			}
 			if (_playerHealth != 0) {
-			_playerHealth = 0;
+				_playerHealth = 0;
 			}
+			_mobIndicator.material = _mobMaterials[9];
+			_mobIndicator.enabled = true;
+			_gMonsterIndex = 10;
+			_gMonsterName = _monsterIndex[10];
+			_gMonsterDamage = _monsterDamage[10];
+			_gMonsterHealth = _monsterHealth[10];
+			_mobHealthIndicator.text = _gMonsterHealth.ToString();
 			StartCoroutine(UpHearts());
 			Debug.LogFormat("[Minecraft Survival #{0}]: The monster you are fighting is {1} and it has {2} health and {3} damage.", _modID, _monsterIndex[_gMonsterIndex], _monsterHealth[_gMonsterIndex], _monsterDamage[_gMonsterIndex]);
-			return;
-		}
-		if ((_materialValues[11] == 0 || _materialValues[12] == 0 || _materialValues[13] == 0 || _materialValues[14] == 0) && !(_materialValues[11] >= 1 || _materialValues[12] >= 1 || _materialValues[13] >= 1 || _materialValues[14] >= 1)) {
-			Debug.LogFormat("[Minecraft Survival #{0}]: Fight did not start because you have no sword!",_modID);
-			_resourceUntilFight = rand.Range(2,7);
 			return;
 		}
 		string mob = "";
@@ -727,39 +738,50 @@ public class MinecraftSurvival : MonoBehaviour {
 		}
 		switch (mob) {
 			case "Zombie":
+				_mobIndicator.material = _mobMaterials[0];
 				_gMonsterIndex = 0;
 				break;
 			case "Skeleton":
+				_mobIndicator.material = _mobMaterials[1];
 				_gMonsterIndex = 1;
 				break;
 			case "Spider":
+				_mobIndicator.material = _mobMaterials[2];
 				_gMonsterIndex = 2;
 				break;
 			case "Creeper":
+				_mobIndicator.material = _mobMaterials[3];
 				_gMonsterIndex = 3;
 				break;
 			case "Slime":
+				_mobIndicator.material = _mobMaterials[4];
 				_gMonsterIndex = 4;
 				break;
 			case "Pigman":
+				_mobIndicator.material = _mobMaterials[0];
 				_gMonsterIndex = 5;
 				break;
 			case "Blaze":
+				_mobIndicator.material = _mobMaterials[5];
 				_gMonsterIndex = 6;
 				break;
 			case "Wither Skeleton":
+				_mobIndicator.material = _mobMaterials[6];
 				_gMonsterIndex = 7;
 				break;
 			case "Enderman":
+				_mobIndicator.material = _mobMaterials[7];
 				_gMonsterIndex = 8;
 				break;
 			case "Shulker":
+				_mobIndicator.material = _mobMaterials[8];
 				_gMonsterIndex = 9;
 				break;
 			default:
 				Debug.LogFormat("[Minecraft Survival #{0}]: Unable to find monster informaton.");
 				break;
 		}
+		_mobIndicator.enabled = true;
 		Debug.LogFormat("[Minecraft Survival #{0}]: The monster you are fighting is {1} and it has {2} health and {3} damage.", _modID, _monsterIndex[_gMonsterIndex], _monsterHealth[_gMonsterIndex], _monsterDamage[_gMonsterIndex]);
 		
 		foreach (KMSelectable km in _resourceButtons) {
@@ -793,6 +815,7 @@ public class MinecraftSurvival : MonoBehaviour {
 		_gMonsterName = _monsterIndex[_gMonsterIndex];
 		_gMonsterHealth = _monsterHealth[_gMonsterIndex];
 		_gMonsterDamage = _monsterDamage[_gMonsterIndex];
+		_mobHealthIndicator.text = _gMonsterHealth.ToString();
 		if (_playerHealth != 0) {
 			_playerHealth = 0;
 		}
@@ -826,9 +849,13 @@ public class MinecraftSurvival : MonoBehaviour {
 		}
 		_gMonsterHealth -= _playerDamage;
 		Debug.LogFormat("[Minecraft Survival #{0}]: You attacked the {1} for {2} damage and now has {3} health remaining.", _modID, _gMonsterName, _playerDamage, _gMonsterHealth < 0 ? 0 : _gMonsterHealth);
+		_mobHealthIndicator.text = _gMonsterHealth < 0 ? 0.ToString() : _gMonsterHealth.ToString();
 		if (_dragonFightStarted && _gMonsterHealth <= 0) {
 			Debug.LogFormat("[Minecraft Survival #{0}]: Dragon defeated. Go click on the egg!", _modID);
 			_dragonDefeated = true;
+			_dragonFightStarted = false;
+			_mobIndicator.enabled = false;
+			_mobHealthIndicator.text = "";
 			UpdateModule();
 			_materialValues[41]++;
 			return;
@@ -837,6 +864,8 @@ public class MinecraftSurvival : MonoBehaviour {
 			_fightStarted = false;
 			_fightReset = true;
 			_resourceUntilFight = rand.Range(6, 13);
+			_mobIndicator.enabled = false;
+			_mobHealthIndicator.text = "";
 			UpdateModule();
 			GiveMobDrop();
 			Debug.LogFormat("[Minecraft Survival #{0}]: The monster has been defeated. Resume gathering! Number of resources gathered till next fight: {1}.", _modID, _resourceUntilFight);
@@ -849,6 +878,8 @@ public class MinecraftSurvival : MonoBehaviour {
 				_fightStarted = false;
 				_fightReset = true;
 				_resourceUntilFight = rand.Range(6, 13);
+				_mobIndicator.enabled = false;
+				_mobHealthIndicator.text = "";
 				UpdateModule();
 				Debug.LogFormat("[Minecraft Survival #{0}]: You died by a {1}. Strike!", _modID, _gMonsterName);
 				GetComponent<KMBombModule>().HandleStrike();
@@ -856,6 +887,7 @@ public class MinecraftSurvival : MonoBehaviour {
 			}
 			Debug.LogFormat("[Minecraft Survival #{0}]: You have been attacked by the {1} for {2} damage and now have {3} health remaining.", _modID, _gMonsterName, (_gMonsterDamage - _playerProc), _playerHealth < 0 ? 0 : _playerHealth);
 			UpdateHearts();
+			return;
 		}
 		if (monsterChance.EqualsAny(1,2) && !(_gMonsterName.Equals("Creeper"))) {
 			_playerHealth -= (_gMonsterDamage-_playerProc) < 0 ? 0 : (_gMonsterDamage-_playerProc);
@@ -863,6 +895,8 @@ public class MinecraftSurvival : MonoBehaviour {
 				_fightStarted = false;
 				_fightReset = true;
 				_resourceUntilFight = rand.Range(6, 13);
+				_mobIndicator.enabled = false;
+				_mobHealthIndicator.text = "";
 				UpdateModule();
 				Debug.LogFormat("[Minecraft Survival #{0}]: You died by a {1}. Strike!", _modID, _gMonsterName);
 				GetComponent<KMBombModule>().HandleStrike();
@@ -870,12 +904,15 @@ public class MinecraftSurvival : MonoBehaviour {
 			}
 			Debug.LogFormat("[Minecraft Survival #{0}]: You have been attacked by the {1} for {2} damage and now have {3} health remaining.", _modID, _gMonsterName, (_gMonsterDamage-_playerProc), _playerHealth < 0 ? 0 : _playerHealth);
 			UpdateHearts();
+			return;
 		} else if (monsterChance == 1 && _gMonsterName.Equals("Creeper")) {
 			_playerHealth -= (_gMonsterDamage - _playerProc) < 0 ? 0 : (_gMonsterDamage - _playerProc);
 			if (_playerHealth <= 0) {
 				_fightStarted = false;
 				_fightReset = true;
 				_resourceUntilFight = rand.Range(6, 13);
+				_mobIndicator.enabled = false;
+				_mobHealthIndicator.text = "";
 				UpdateModule();
 				Debug.LogFormat("[Minecraft Survival #{0}]: A Creeper blew you up. You died, aw man. Strike!", _modID);
 				GetComponent<KMBombModule>().HandleStrike();
@@ -883,18 +920,20 @@ public class MinecraftSurvival : MonoBehaviour {
 			}
 			Debug.LogFormat("[Minecraft Survival #{0}]: You have been attacked by the {1} for {2} damage and now have {3} health remaining.", _modID, _gMonsterName, (_gMonsterDamage - _playerProc), _playerHealth);
 			UpdateHearts();
+			return;
 		}
 	}
 
 	void EatEventHandler() {
-		if (_playerHunger == 10) { return; }
-		if (_fightStarted) { 
+		if (_fightStarted || _dragonFightStarted) {
+			if (_playerHealth == 20) { return; }
 			if (_materialValues[4] >= 1) {
 				_materialValues[4]--;
 				_playerHealth = (_playerHealth + 7) > 20 ? 20 : (_playerHealth + 7);
 				UpdateHearts();
 			}
-		} else { 
+		} else {
+			if (_playerHunger == 10) { return; }
 			if (_materialValues[4] >= 1) {
 				_materialValues[4]--;
 				_playerHunger = (_playerHunger + 4) > 10 ? 10 : (_playerHunger + 4);
@@ -905,10 +944,6 @@ public class MinecraftSurvival : MonoBehaviour {
 
 	void StartTheDamnDragonFightAlready() {
 		_dragonFightStarted = true;
-		_gMonsterIndex = 10;
-		_gMonsterName = _monsterIndex[10];
-		_gMonsterDamage = _monsterDamage[10];
-		_gMonsterHealth = _monsterHealth[10];
 		StartFightEventHandler();
 	}
 
@@ -1209,7 +1244,9 @@ public class MinecraftSurvival : MonoBehaviour {
 					resource.GetComponent<Renderer>().enabled = false; resource.Highlight.gameObject.SetActive(false);
 					i++;
 				}
-				_actionButtons[7].GetComponent<Renderer>().enabled = false; _actionButtons[7].Highlight.gameObject.SetActive(false);
+				if (!_dragonDefeated) {
+					_actionButtons[7].GetComponent<Renderer>().enabled = false; _actionButtons[7].Highlight.gameObject.SetActive(false);
+				}
 				_dimensionIndex = 0;
 				_moduleMeshes[0].material = _dimensionMaterials[0];
 				_moduleMeshes[1].material = _dimensionMaterials[1];
@@ -1221,7 +1258,9 @@ public class MinecraftSurvival : MonoBehaviour {
 					resource.GetComponent<Renderer>().enabled = false; resource.Highlight.gameObject.SetActive(false);
 					i++;
 				}
-				_actionButtons[7].GetComponent<Renderer>().enabled = false; _actionButtons[7].Highlight.gameObject.SetActive(false);
+				if (!_dragonDefeated) {
+					_actionButtons[7].GetComponent<Renderer>().enabled = false; _actionButtons[7].Highlight.gameObject.SetActive(false);
+				}
 				_dimensionIndex = 1;
 				_moduleMeshes[0].material = _dimensionMaterials[2];
 				_moduleMeshes[1].material = _dimensionMaterials[3];
@@ -1233,7 +1272,9 @@ public class MinecraftSurvival : MonoBehaviour {
 					resource.GetComponent<Renderer>().enabled = false; resource.Highlight.gameObject.SetActive(false);
 					i++;
 				}
-				_actionButtons[7].GetComponent<Renderer>().enabled = true; _actionButtons[7].Highlight.gameObject.SetActive(true);
+				if (!_dragonDefeated) {
+					_actionButtons[7].GetComponent<Renderer>().enabled = true; _actionButtons[7].Highlight.gameObject.SetActive(true);
+				}
 				_dimensionIndex = 2;
 				_moduleMeshes[0].material = _dimensionMaterials[4];
 				_moduleMeshes[1].material = _dimensionMaterials[5];
@@ -1305,7 +1346,15 @@ public class MinecraftSurvival : MonoBehaviour {
 			sr.GetComponent<Renderer>().enabled = false;
 			sr.Highlight.gameObject.SetActive(false);
 		}
+		for (int i = 0; i <= 9; i++) {
+			_emptyHunger[i].enabled = false;
+			_fullHunger[i].enabled = false;
+			_emptyHearts[i].enabled = false;
+			_halfHearts[i].enabled = false;
+			_fullHearts[i].enabled = false;
+		}
 		_materialValueText.text = "";
+		_mobHealthIndicator.text = "";
 		_moduleMeshes[0].material = _dimensionMaterials[8];
 		_moduleMeshes[1].material = _dimensionMaterials[8];
 		_modSolved = true;
@@ -1385,7 +1434,7 @@ public class MinecraftSurvival : MonoBehaviour {
 			inv.Highlight.gameObject.SetActive(false);
 		}
 		_materialValues[9] = 1;
-		_materialValues[4] = 8;
+		_materialValues[4] = 10;
 		yield break;
 	}
 
@@ -1395,13 +1444,13 @@ public class MinecraftSurvival : MonoBehaviour {
 			foreach (SpriteRenderer sr in _regenHearts) {
 				sr.enabled = true;
 			}
-			yield return new WaitForSeconds(0.03f);
+			yield return new WaitForSeconds(0.02f);
 			foreach (SpriteRenderer sr in _regenHearts)
 			{
 				sr.enabled = false;
 			}
 			UpdateHearts();
-			yield return new WaitForSeconds(0.03f);
+			yield return new WaitForSeconds(0.02f);
 			_playerHealth++;
 		}
 		_isAnimating = false;
