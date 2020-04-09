@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using KModkit;
 using rand = UnityEngine.Random;
 
 public class MinecraftSurvival : MonoBehaviour {
@@ -38,8 +36,11 @@ public class MinecraftSurvival : MonoBehaviour {
 	public TextMesh _materialValueText;
 	public TextMesh _mobHealthIndicator;
 
+	public Vector3 _resourceTextPos;
+	public Vector3 _invTextPos;
+
 	// Specifically for Logging
-	static int _modIDCount = 0;
+	static int _modIDCount = 1;
 	int _modID;
 	private bool _modSolved;
 
@@ -59,13 +60,14 @@ public class MinecraftSurvival : MonoBehaviour {
 	int[] _materialValues = new int[44];
 	int[] _swordDamages = new int[] { 6, 9, 12, 15 };
 	int[] _armorProc = new int[] { 4, 8 };
+	int[] _materialValueIndex = new int[] { 42, 19, 20, 21, 22, 23, 25, 24, 34, 26, 27, 28, 29, 25, 30, 31 };
 
 	string _gMonsterName = "";
 
 	string[] _monsterIndex = new string[] { "Zombie", "Skeleton", "Spider", "Creeper", "Slime", "Pigman", "Blaze", "Wither Skeleton", "Enderman", "Shulker", "Ender Dragon" };
 	string[][] _monsterTable = new string[][] {
-		new string[] { "Zombie", "Skeleton", "Spider", "Creeper", "Slime", "Enderman" },
-		new string[] { "Skeleton", "Pigman", "Blaze", "Wither Skeleton", "Enderman" },
+		new string[] { "Zombie", "Skeleton", "Spider", "Creeper", "Enderman", "Slime", "Enderman" },
+		new string[] { "Skeleton", "Blaze", "Pigman", "Enderman", "Blaze", "Enderman", "Wither Skeleton", "Enderman", "Blaze" },
 		new string[] { "Enderman", "Shulker" }
 	};
 
@@ -86,18 +88,22 @@ public class MinecraftSurvival : MonoBehaviour {
 		}
 
 		foreach (KMSelectable action in _actionButtons) {
-			action.OnInteract += delegate () { if (_modSolved) { return false; } ActionButton(action); return false; };
+			action.OnInteract += delegate () { if (_modSolved) { return false; } action.AddInteractionPunch(); ActionButton(action); return false; };
+			action.OnHighlight += delegate () { if (_isAnimating || _modSolved) { return; } if (Array.IndexOf(_actionButtons, action) == 6) { _materialValueText.text = _materialValues[4].ToString(); } return; };
+			action.OnHighlightEnded += delegate () { _materialValueText.text = ""; return; };
 		}
 
 		foreach (KMSelectable resource in _resourceButtons) {
 			
-			resource.OnInteract += delegate () { if (_modSolved) { return false; } ResourceButton(resource); return false; };
+			resource.OnInteract += delegate () { if (_modSolved) { return false; } resource.AddInteractionPunch(); ResourceButton(resource); return false; };
+			resource.OnHighlight += delegate () { if (_isAnimating || _modSolved) { return; } UpdateAmountDisplayAct(resource); return; };
+			resource.OnHighlightEnded += delegate () { _materialValueText.text = ""; return; };
 		}
 
 		foreach (KMSelectable inv in _allResourceInventoryIndicies) {
 			
-			inv.OnInteract += delegate () { if (_modSolved) { return false; } InventoryButton(inv); return false; };
-			inv.OnHighlight += delegate () { if (_isAnimating) { return; } UpdateAmountDisplay(inv); return; };
+			inv.OnInteract += delegate () { if (_modSolved) { return false; } inv.AddInteractionPunch(); InventoryButton(inv); return false; };
+			inv.OnHighlight += delegate () { if (_isAnimating || _modSolved) { return; } UpdateAmountDisplayInv(inv); return; };
 			inv.OnHighlightEnded += delegate () { _materialValueText.text = ""; return;  };
 		}
 		_resourceUntilFight = rand.Range(6,13);
@@ -661,9 +667,14 @@ public class MinecraftSurvival : MonoBehaviour {
 		_materialValueText.text = _materialValues[index].ToString();
 	}
 
-	void UpdateAmountDisplay(KMSelectable but) {
+	void UpdateAmountDisplayInv(KMSelectable but) {
 		int index = Array.IndexOf(_allResourceInventoryIndicies, but);
 		_materialValueText.text = _materialValues[index].ToString();
+	}
+
+	void UpdateAmountDisplayAct(KMSelectable but) {
+		int index = Array.IndexOf(_resourceButtons, but);
+		_materialValueText.text = _materialValues[_materialValueIndex[index]].ToString();
 	}
 
 	void StartFightEventHandler() {
@@ -1364,6 +1375,7 @@ public class MinecraftSurvival : MonoBehaviour {
 		_isAnimating = true;
 		_moduleMeshes[0].material = _dimensionMaterials[6];
 		_moduleMeshes[1].material = _dimensionMaterials[7];
+		_materialValueText.text = "";
 		for (int i = 0; i <= 9; i++) {
 			_fullHunger[i].enabled = false;
 			_emptyHunger[i].enabled = false;
@@ -1379,13 +1391,14 @@ public class MinecraftSurvival : MonoBehaviour {
 		}
 		foreach (KMSelectable inv in _allResourceInventoryIndicies) {
 			inv.GetComponent<Renderer>().enabled = true;
-			yield return new WaitForSeconds(0.03f);
+			yield return new WaitForSeconds(0.015f);
 		}
 		foreach (KMSelectable inv in _allResourceInventoryIndicies) {
 			inv.Highlight.gameObject.SetActive(true);
 		}
 		_isAnimating = false;
 		_materialValueText.text = "-";
+		_materialValueText.transform.localPosition = _invTextPos;
 		_actionButtons[5].GetComponent<Renderer>().enabled = true;
 		_actionButtons[5].Highlight.gameObject.SetActive(true);
 		yield break;
@@ -1405,8 +1418,9 @@ public class MinecraftSurvival : MonoBehaviour {
 		foreach (KMSelectable inv in kma.Reverse())
 		{
 			inv.GetComponent<Renderer>().enabled = false;
-			yield return new WaitForSeconds(0.03f);
+			yield return new WaitForSeconds(0.015f);
 		}
+		_materialValueText.transform.localPosition = _resourceTextPos;
 		UpdateModule();
 		UpdateHunger();
 		_isAnimating = false;
