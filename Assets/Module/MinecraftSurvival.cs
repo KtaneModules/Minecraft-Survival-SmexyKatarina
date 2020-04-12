@@ -289,7 +289,7 @@ public class MinecraftSurvival : MonoBehaviour {
 				_materialValues[25] += rand.Range(1, 3);
 				break;
 			case 7:
-				if (!(_materialValues[5] >= 1 || _materialValues[6] >= 1 || _materialValues[7] >= 1 || _materialValues[8] >= 1))
+				if (!(_materialValues[11] >= 1 || _materialValues[12] >= 1 || _materialValues[13] >= 1 || _materialValues[14] >= 1))
 				{
 					GetComponent<KMBombModule>().HandleStrike();
 					Debug.LogFormat("[Minecraft Survival #{0}]: Strike! There wasn't enough required.", _modID);
