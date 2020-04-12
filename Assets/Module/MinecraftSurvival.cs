@@ -192,6 +192,7 @@ public class MinecraftSurvival : MonoBehaviour {
 			case 6:
 				if (_isAnimating) { return; }
 				EatEventHandler();
+				UpdateText(4);
 				break;
 			case 7:
 				if (!_dragonDefeated) {
@@ -226,8 +227,9 @@ public class MinecraftSurvival : MonoBehaviour {
 					Debug.LogFormat("[Minecraft Survival #{0}]: Strike! There wasn't enough required.",_modID);
 					break;
 				}
-				if (_materialValues[42] >= 64) { break; }
+				if (_materialValues[42] >= 64 || _materialValues[42] + 2 >= 64) { _materialValues[42] = 64; UpdateText(42); break; }
 				_materialValues[42] += 2;
+				UpdateText(42);
 				break;
 			case 1:
 				if (!(_materialValues[5] >= 1 || _materialValues[6] >= 1 || _materialValues[7] >= 1 || _materialValues[8] >= 1))
@@ -236,8 +238,10 @@ public class MinecraftSurvival : MonoBehaviour {
 					Debug.LogFormat("[Minecraft Survival #{0}]: Strike! There wasn't enough required.", _modID);
 					break;
 				}
-				if (_materialValues[19] >= 64) { break; }
-				_materialValues[19] += rand.Range(1, 4);
+				int rnd = rand.Range(1,4);
+				if (_materialValues[19] >= 64 || _materialValues[19] + rnd >= 64 ) { _materialValues[19] = 64; UpdateText(19); break; }
+				_materialValues[19] += rnd;
+				UpdateText(19);
 				break;
 			case 2:
 				if (!(_materialValues[5] >= 1 || _materialValues[6] >= 1 || _materialValues[7] >= 1 || _materialValues[8] >= 1))
@@ -246,8 +250,10 @@ public class MinecraftSurvival : MonoBehaviour {
 					Debug.LogFormat("[Minecraft Survival #{0}]: Strike! There wasn't enough required.", _modID);
 					break;
 				}
-				if (_materialValues[20] >= 64) { break; }
-				_materialValues[20] += rand.Range(3, 6);
+				rnd = rand.Range(3,6);
+				if (_materialValues[20] >= 64 || _materialValues[20]+rnd >= 64 ) { _materialValues[20] = 64; UpdateText(20); break; }
+				_materialValues[20] += rnd;
+				UpdateText(20);
 				break;
 			case 3:
 				if (_materialValues[5] >= 0 && !(_materialValues[6] >= 1 || _materialValues[7] >= 1 || _materialValues[8] >= 1))
@@ -256,8 +262,10 @@ public class MinecraftSurvival : MonoBehaviour {
 					Debug.LogFormat("[Minecraft Survival #{0}]: Strike! There wasn't enough required.", _modID);
 					break;
 				}
-				if (_materialValues[21] >= 64) { break; }
-				_materialValues[21] += rand.Range(1, 4);
+				rnd = rand.Range(1, 4);
+				if (_materialValues[21] >= 64 || _materialValues[21]+rnd >= 64) { _materialValues[21] = 64; UpdateText(21); break; }
+				_materialValues[21] += rnd;
+				UpdateText(21);
 				break;
 			case 4:
 				if ((_materialValues[5] >= 0 && _materialValues[6] >= 0) && !(_materialValues[7] >= 1 || _materialValues[8] >= 1))
@@ -266,8 +274,10 @@ public class MinecraftSurvival : MonoBehaviour {
 					Debug.LogFormat("[Minecraft Survival #{0}]: Strike! There wasn't enough required.", _modID);
 					break;
 				}
-				if (_materialValues[22] >= 64) { break; }
-				_materialValues[22] += rand.Range(1, 3);
+				rnd = rand.Range(1, 3);
+				if (_materialValues[22] >= 64 || _materialValues[22]+rnd >= 64) { _materialValues[22] = 64; UpdateText(22); break; }
+				_materialValues[22] += rnd;
+				UpdateText(22);
 				break;
 			case 5:
 				if (!(_materialValues[10] >= 1)) {
@@ -275,8 +285,9 @@ public class MinecraftSurvival : MonoBehaviour {
 					Debug.LogFormat("[Minecraft Survival #{0}]: Strike! There wasn't enough required.", _modID);
 					break;
 				}
-				if (_materialValues[23] >= 64) { break; }
+				if (_materialValues[23] >= 64 || _materialValues[23]+1 >= 64) { _materialValues[23] = 64; UpdateText(23); break; }
 				_materialValues[23]++;
+				UpdateText(23);
 				break;
 			case 6:
 				if ((_materialValues[5] >= 0 && _materialValues[6] >= 0 && _materialValues[7] >= 0) && !(_materialValues[8] >= 1))
@@ -285,8 +296,10 @@ public class MinecraftSurvival : MonoBehaviour {
 					Debug.LogFormat("[Minecraft Survival #{0}]: Strike! There wasn't enough required.", _modID);
 					break;
 				}
-				if (_materialValues[25] >= 64) { break; }
-				_materialValues[25] += rand.Range(1, 3);
+				rnd = rand.Range(1, 3);
+				if (_materialValues[25] >= 64 || _materialValues[25]+rnd >= 64) { _materialValues[25] = 64; UpdateText(25); break; }
+				_materialValues[25] += rnd;
+				UpdateText(25);
 				break;
 			case 7:
 				if (!(_materialValues[11] >= 1 || _materialValues[12] >= 1 || _materialValues[13] >= 1 || _materialValues[14] >= 1))
@@ -295,8 +308,10 @@ public class MinecraftSurvival : MonoBehaviour {
 					Debug.LogFormat("[Minecraft Survival #{0}]: Strike! There wasn't enough required.", _modID);
 					break;
 				}
-				if (_materialValues[24] >= 64) { break; }
-				_materialValues[24] += rand.Range(1,4);
+				rnd = rand.Range(1, 4);
+				if (_materialValues[24] >= 64 || _materialValues[24]+rnd >= 64) { _materialValues[24] = 64; UpdateText(24); break; }
+				_materialValues[24] += rnd;
+				UpdateText(24);
 				break;
 			// Nether
 			case 8:
@@ -305,8 +320,10 @@ public class MinecraftSurvival : MonoBehaviour {
 					Debug.LogFormat("[Minecraft Survival #{0}]: Strike! There wasn't enough required.", _modID);
 					break;
 				}
-				if (_materialValues[34] >= 64) { break; }
-				_materialValues[34] += rand.Range(2, 5);
+				rnd = rand.Range(2, 5);
+				if (_materialValues[34] >= 64 || _materialValues[34] + rnd >= 64) { _materialValues[34] = 64; UpdateText(34); break; }
+				_materialValues[34] += rnd;
+				UpdateText(34);
 				break;
 			case 9:
 				if ((_materialValues[5] >= 0 && _materialValues[6] >= 0) && !(_materialValues[7] >= 1 || _materialValues[8] >= 1))
@@ -315,8 +332,9 @@ public class MinecraftSurvival : MonoBehaviour {
 					Debug.LogFormat("[Minecraft Survival #{0}]: Strike! There wasn't enough required.", _modID);
 					break;
 				}
-				if (_materialValues[26] >= 64) { break; }
+				if (_materialValues[26] >= 64 || _materialValues[26] + 2 >= 64) { _materialValues[26] = 64; UpdateText(26); break; }
 				_materialValues[26] += 2;
+				UpdateText(26);
 				break;
 			case 10:
 				if ((_materialValues[5] >= 0 && _materialValues[6] >= 0) && !(_materialValues[7] >= 1 || _materialValues[8] >= 1))
@@ -325,8 +343,9 @@ public class MinecraftSurvival : MonoBehaviour {
 					Debug.LogFormat("[Minecraft Survival #{0}]: Strike! There wasn't enough required.", _modID);
 					break;
 				}
-				if (_materialValues[27] >= 64) { break; }
+				if (_materialValues[27] >= 64 || _materialValues[27] + 2 >= 64) { _materialValues[27] = 64; UpdateText(27); break; }
 				_materialValues[27] += 2;
+				UpdateText(27);
 				break;
 			case 11:
 				if (!(_materialValues[10] >= 1)) {
@@ -334,8 +353,9 @@ public class MinecraftSurvival : MonoBehaviour {
 					Debug.LogFormat("[Minecraft Survival #{0}]: Strike! There wasn't enough required.", _modID);
 					break;
 				}
-				if (_materialValues[28] >= 64) { break; }
+				if (_materialValues[28] >= 64 || _materialValues[28] + 2 >= 64) { _materialValues[28] = 64; UpdateText(28); break; }
 				_materialValues[28] += 2;
+				UpdateText(28);
 				break;
 			// End
 			case 12:
@@ -345,8 +365,10 @@ public class MinecraftSurvival : MonoBehaviour {
 					Debug.LogFormat("[Minecraft Survival #{0}]: Strike! There wasn't enough required.", _modID);
 					break;
 				}
-				if (_materialValues[29] >= 64) { break; }
-				_materialValues[29] += rand.Range(2, 4);
+				rnd = rand.Range(2, 4);
+				if (_materialValues[29] >= 64 || _materialValues[29] + rnd >= 64) { _materialValues[29] = 64; UpdateText(29); break; }
+				_materialValues[29] += rnd;
+				UpdateText(29);
 				break;
 			case 13:
 				if ((_materialValues[5] >= 0 && _materialValues[6] >= 0 && _materialValues[7] >= 0) && !(_materialValues[8] >= 1))
@@ -355,8 +377,10 @@ public class MinecraftSurvival : MonoBehaviour {
 					Debug.LogFormat("[Minecraft Survival #{0}]: Strike! There wasn't enough required.", _modID);
 					break;
 				}
-				if (_materialValues[25] >= 64) { break; }
-				_materialValues[25] += rand.Range(2, 4);
+				rnd = rand.Range(2, 4);
+				if (_materialValues[25] >= 64 || _materialValues[25] + rnd >= 64) { _materialValues[25] = 64; UpdateText(25); break; }
+				_materialValues[25] += rnd;
+				UpdateText(25);
 				break;
 			case 14:
 				if (!(_materialValues[5] >= 1 || _materialValues[6] >= 1 || _materialValues[7] >= 1 || _materialValues[8] >= 1))
@@ -365,8 +389,10 @@ public class MinecraftSurvival : MonoBehaviour {
 					Debug.LogFormat("[Minecraft Survival #{0}]: Strike! There wasn't enough required.", _modID);
 					break;
 				}
-				if (_materialValues[30] >= 64) { break; }
-				_materialValues[30] += rand.Range(3, 5);
+				rnd = rand.Range(3, 5);
+				if (_materialValues[30] >= 64 || _materialValues[30] + rnd >= 64) { _materialValues[30] = 64; UpdateText(30); break; }
+				_materialValues[30] += rnd;
+				UpdateText(30);
 				break;
 			case 15:
 				if (!(_materialValues[10] >= 1)) {
@@ -374,8 +400,9 @@ public class MinecraftSurvival : MonoBehaviour {
 					Debug.LogFormat("[Minecraft Survival #{0}]: Strike! There wasn't enough required.", _modID);
 					break;
 				}
-				if (_materialValues[31] >= 64) { break; }
+				if (_materialValues[31] >= 64 || _materialValues[31] + 2 >= 64) { _materialValues[31] = 64; UpdateText(31); break; }
 				_materialValues[31] += 2;
+				UpdateText(31);
 				break;
 			default:
 				Debug.LogFormat("[Minecraft Survival {0}]: Unable to update resources.",_modID);
@@ -394,7 +421,7 @@ public class MinecraftSurvival : MonoBehaviour {
 		switch (index) {
 			case 0:
 				if (_materialValues[42] >= 1) {
-					if (_materialValues[0] >= 64) { break; }
+					if (_materialValues[0] >= 64 || _materialValues[0] + 4 >= 64) { _materialValues[0] = 64; break; }
 					_materialValues[42]--;
 					_materialValues[0] += 4;
 					UpdateText(0);
@@ -406,7 +433,7 @@ public class MinecraftSurvival : MonoBehaviour {
 				}
 			case 1:
 				if (_materialValues[0] >= 2) {
-					if (_materialValues[1] >= 64) { break; }
+					if (_materialValues[1] >= 64 || _materialValues[1] + 4 >= 64) { _materialValues[1] = 64; break; }
 					_materialValues[0] -= 2;
 					_materialValues[1] += 4;
 					UpdateText(1);
@@ -418,7 +445,7 @@ public class MinecraftSurvival : MonoBehaviour {
 				}
 			case 2:
 				if (_materialValues[19] >= 8) {
-					if (_materialValues[2] >= 64) { break; }
+					if (_materialValues[2] >= 64 || _materialValues[2]+1 >= 64) { _materialValues[2] = 64; break; }
 					_materialValues[19] -= 8;
 					_materialValues[2]++;
 					UpdateText(2);
@@ -430,10 +457,11 @@ public class MinecraftSurvival : MonoBehaviour {
 				}
 			case 3:
 				if (_materialValues[2] >= 1 && _materialValues[21] >= 1 && _materialValues[20] >= 1) {
-					if (_materialValues[3] >= 64) { break; }
+					int rnd = rand.Range(1, 4);
+					if (_materialValues[3] >= 64 || _materialValues[3]+rnd >= 64 ) { _materialValues[3] = 64; break; }
 					_materialValues[21]--;
 					_materialValues[20]--;
-					_materialValues[3] += rand.Range(1,4);
+					_materialValues[3] += rnd;
 					UpdateText(3);
 					break;
 				} else {
@@ -443,10 +471,11 @@ public class MinecraftSurvival : MonoBehaviour {
 				}
 			case 4:
 				if (_materialValues[2] >= 1 && _materialValues[24] >= 1 && _materialValues[20] >= 1) {
-					if (_materialValues[4] >= 64) { break; }
+					int rnd = rand.Range(1, 4);
+					if (_materialValues[4] >= 64 || _materialValues[4] + rnd >= 64) { _materialValues[4] = 64; break; }
 					_materialValues[24]--;
 					_materialValues[20]--;
-					_materialValues[4] += rand.Range(1,4);
+					_materialValues[4] += rnd;
 					UpdateText(4);
 					break;
 				} else {
@@ -456,7 +485,7 @@ public class MinecraftSurvival : MonoBehaviour {
 				}
 			case 5:
 				if (_materialValues[0] >= 3 && _materialValues[1] >= 2) {
-					if (_materialValues[5] >= 64) { break; }
+					if (_materialValues[5] >= 64 || _materialValues[5] + 1 >= 64) { _materialValues[5] = 64; break; }
 					_materialValues[0] -= 3;
 					_materialValues[1] -= 2;
 					_materialValues[5]++;
@@ -469,7 +498,7 @@ public class MinecraftSurvival : MonoBehaviour {
 				}
 			case 6:
 				if (_materialValues[5] >= 1 && _materialValues[19] >= 4) {
-					if (_materialValues[6] >= 64) { break; }
+					if (_materialValues[6] >= 64 || _materialValues[6] + 1 >= 64) { _materialValues[6] = 64; break; }
 					_materialValues[5]--;
 					_materialValues[19] -= 4;
 					_materialValues[6]++;
@@ -482,7 +511,7 @@ public class MinecraftSurvival : MonoBehaviour {
 				}
 			case 7:
 				if (_materialValues[6] >= 1 && _materialValues[3] >= 5) {
-					if (_materialValues[7] >= 64) { break; }
+					if (_materialValues[7] >= 64 || _materialValues[7] + 1 >= 64) { _materialValues[7] = 64; break; }
 					_materialValues[6]--;
 					_materialValues[3] -= 5;
 					_materialValues[7]++;
@@ -495,7 +524,7 @@ public class MinecraftSurvival : MonoBehaviour {
 				}
 			case 8:
 				if (_materialValues[7] >= 1 && _materialValues[22] >= 6) {
-					if (_materialValues[8] >= 64) { break; }
+					if (_materialValues[8] >= 64 || _materialValues[8] + 1 >= 64) { _materialValues[8] = 64; break; }
 					_materialValues[7]--;
 					_materialValues[22] -= 6;
 					_materialValues[8]++;
@@ -508,7 +537,7 @@ public class MinecraftSurvival : MonoBehaviour {
 				}
 			case 9:
 				if (_materialValues[0] >= 3 && _materialValues[1] >= 2) {
-					if (_materialValues[9] >= 64) { break; }
+					if (_materialValues[9] >= 64 || _materialValues[9] + 1 >= 64) { _materialValues[9] = 64; break; }
 					_materialValues[0] -= 3;
 					_materialValues[1] -= 2;
 					_materialValues[9]++;
@@ -521,7 +550,7 @@ public class MinecraftSurvival : MonoBehaviour {
 				}
 			case 10:
 				if (_materialValues[0] >= 1 && _materialValues[1] >= 2) {
-					if (_materialValues[10] >= 64) { break; }
+					if (_materialValues[10] >= 64 || _materialValues[10] + 1 >= 64) { _materialValues[10] = 64; break; }
 					_materialValues[0]--;
 					_materialValues[1] -= 2;
 					_materialValues[10]++;
@@ -534,7 +563,7 @@ public class MinecraftSurvival : MonoBehaviour {
 				}
 			case 11:
 				if (_materialValues[0] >= 2 && _materialValues[1] >= 1) {
-					if (_materialValues[11] >= 64) { break; }
+					if (_materialValues[11] >= 64 || _materialValues[11] + 1 >= 64) { _materialValues[11] = 64; break; }
 					_materialValues[0] -= 2;
 					_materialValues[1]--;
 					_materialValues[11]++;
@@ -547,7 +576,7 @@ public class MinecraftSurvival : MonoBehaviour {
 				}
 			case 12:
 				if (_materialValues[11] >= 1 && _materialValues[19] >= 4) {
-					if (_materialValues[12] >= 64) { break; }
+					if (_materialValues[12] >= 64 || _materialValues[12] + 1 >= 64) { _materialValues[12] = 64; break; }
 					_materialValues[11]--;
 					_materialValues[19] -= 4;
 					_materialValues[12]++;
@@ -560,7 +589,7 @@ public class MinecraftSurvival : MonoBehaviour {
 				}
 			case 13:
 				if (_materialValues[12] >= 1 && _materialValues[3] >= 5) {
-					if (_materialValues[13] >= 64) { break; }
+					if (_materialValues[13] >= 64 || _materialValues[13] + 1 >= 64) { _materialValues[13] = 64; break; }
 					_materialValues[12]--;
 					_materialValues[3] -= 5;
 					_materialValues[13]++;
@@ -573,7 +602,7 @@ public class MinecraftSurvival : MonoBehaviour {
 				}
 			case 14:
 				if (_materialValues[13] >= 1 && _materialValues[22] >= 6) {
-					if (_materialValues[14] >= 64) { break; }
+					if (_materialValues[14] >= 64 || _materialValues[14] + 1 >= 64) { _materialValues[14] = 64; break; }
 					_materialValues[13]--;
 					_materialValues[22] -= 6;
 					_materialValues[14]++;
@@ -586,7 +615,7 @@ public class MinecraftSurvival : MonoBehaviour {
 				}
 			case 15:
 				if (_materialValues[3] >= 24) {
-					if (_materialValues[15] >= 64) { break; }
+					if (_materialValues[15] >= 64 || _materialValues[15] + 1 >= 64) { _materialValues[15] = 64; break; }
 					_materialValues[3] -= 24;
 					_materialValues[15]++;
 					UpdateText(15);
@@ -598,7 +627,7 @@ public class MinecraftSurvival : MonoBehaviour {
 				}
 			case 16:
 				if (_materialValues[22] >= 24) {
-					if (_materialValues[16] >= 64) { break; }
+					if (_materialValues[16] >= 64 || _materialValues[16] + 1 >= 64) { _materialValues[16] = 64; break; }
 					_materialValues[22] -= 24;
 					_materialValues[16]++;
 					UpdateText(16);
@@ -610,7 +639,7 @@ public class MinecraftSurvival : MonoBehaviour {
 				}
 			case 17:
 				if (_materialValues[32] >= 1) {
-					if (_materialValues[17] >= 64) { break; }
+					if (_materialValues[17] >= 64 || _materialValues[17] + 2 >= 64) { _materialValues[17] = 64; break; }
 					_materialValues[32]--;
 					_materialValues[17] += 2;
 					UpdateText(17);
@@ -622,7 +651,7 @@ public class MinecraftSurvival : MonoBehaviour {
 				}
 			case 18:
 				if (_materialValues[17] >= 1 && _materialValues[33] >= 1) {
-					if (_materialValues[18] >= 64) { break; }
+					if (_materialValues[18] >= 64 || _materialValues[18] + 1 >= 64) { _materialValues[18] = 64; break; }
 					_materialValues[17]--;
 					_materialValues[33]--;
 					_materialValues[18]++;
@@ -646,7 +675,7 @@ public class MinecraftSurvival : MonoBehaviour {
 				}
 			case 43:
 				if (_materialValues[3] >= 1 && _materialValues[23] >= 1) {
-					if (_materialValues[43] >= 64) { break; }
+					if (_materialValues[43] >= 64 || _materialValues[43] + 1 >= 64) { _materialValues[43] = 64; break; }
 					_materialValues[3]--;
 					_materialValues[23]--;
 					_materialValues[43]++;
@@ -661,10 +690,15 @@ public class MinecraftSurvival : MonoBehaviour {
 				Debug.LogFormat("[Minecraft Survival #{0}]: Unable to find the index of the item.",_modID);
 				break;
 		}
+		UpdateText(index);
 	}
 
 	void UpdateText(int index) {
 		_materialValueText.text = _materialValues[index].ToString();
+	}
+
+	int GetIndex(KMSelectable but) {
+		return _materialValueIndex[Array.IndexOf(_resourceButtons, but)];
 	}
 
 	void UpdateAmountDisplayInv(KMSelectable but) {
@@ -1306,33 +1340,46 @@ public class MinecraftSurvival : MonoBehaviour {
 		switch (_gMonsterName)
 		{
 			case "Zombie":
+				if (_materialValues[35] >= 64 || _materialValues[35] + 1 >= 64) { _materialValues[35] = 64; break; }
 				_materialValues[35]++;
 				break;
 			case "Skeleton":
-				_materialValues[36] += rand.Range(2,4);
+				int rnd = rand.Range(2, 4);
+				if (_materialValues[36] >= 64 || _materialValues[36] + rnd >= 64) { _materialValues[36] = 64; break; }
+				_materialValues[36] += rnd;
 				break;
 			case "Spider":
+				if (_materialValues[37] >= 64 || _materialValues[37] + 2 >= 64) { _materialValues[37] = 64; break; }
 				_materialValues[37] += 2;
 				break;
 			case "Creeper":
+				if (_materialValues[38] >= 64 || _materialValues[38] + 1 >= 64) { _materialValues[38] = 64; break; }
 				_materialValues[38]++;
 				break;
 			case "Slime":
-				_materialValues[39] += rand.Range(2,4);
+				rnd = rand.Range(2, 4);
+				if (_materialValues[39] >= 64 || _materialValues[39] + rnd >= 64) { _materialValues[39] = 64; break; }
+				_materialValues[39] += rnd;
 				break;
 			case "Pigman":
+				if (_materialValues[35] >= 64 || _materialValues[35] + 2 >= 64) { _materialValues[35] = 64; break; }
 				_materialValues[35] += 2;
 				break;
 			case "Blaze":
+				if (_materialValues[32] >= 64 || _materialValues[32] + 2 >= 64) { _materialValues[32] = 64; break; }
 				_materialValues[32] += 2;
 				break;
 			case "Wither Skeleton":
-				_materialValues[20] += rand.Range(2,5);
+				rnd = rand.Range(2, 5);
+				if (_materialValues[20] >= 64 || _materialValues[20] + rnd >= 64) { _materialValues[20] = 64; break; }
+				_materialValues[20] += rnd;
 				break;
 			case "Enderman":
-				_materialValues[33]++;
+				if (_materialValues[33] >= 64 || _materialValues[33] + 2 >= 64) { _materialValues[33] = 64; break; }
+				_materialValues[33] += 2;
 				break;
 			case "Shulker":
+				if (_materialValues[40] >= 64 || _materialValues[40] + 1 >= 64) { _materialValues[40] = 64; break; }
 				_materialValues[40]++;
 				break;
 			default:
