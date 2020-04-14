@@ -14,11 +14,11 @@ MonoBehaviour:
   id: kataMinecraftSurvival
   title: Minecraft Survival
   author: Katarina
-  description: "Minecraft Survival - V1.6\n\n\"Hardcore taken to a whole new difficulty.
+  description: "Minecraft Survival - V1.7\n\n\"Hardcore taken to a whole new difficulty.
     Now with more creepers!\"\r\n\r\nModule ID: kataMinecraftSurvival\n\r\nModule
     Idea and Implementation created by: Katarina\n\r\nNot TP-Supported. Will take
     time till it does.\n\r\nHTML Manual Version:\r\nhttps://ktane.timwi.de/HTML/Minecraft%20Survival.html\r\n\r\nIf
     there are any problems that you may have, contact me via Discord: Smexy Ahri#5259"
-  version: 1.6
+  version: 1.7
   outputFolder: build
   previewImage: {fileID: 2800000, guid: d9163391b2fbe4d4690a8f6cb25b2881, type: 3}
