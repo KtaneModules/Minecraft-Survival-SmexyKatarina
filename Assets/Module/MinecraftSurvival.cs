@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using rand = UnityEngine.Random;
@@ -89,7 +90,7 @@ public class MinecraftSurvival : MonoBehaviour {
 
 		foreach (KMSelectable action in _actionButtons) {
 			action.OnInteract += delegate () { if (_modSolved) { return false; } action.AddInteractionPunch(); ActionButton(action); return false; };
-			action.OnHighlight += delegate () { if (_isAnimating || _modSolved) { return; } if (Array.IndexOf(_actionButtons, action) == 6) { _materialValueText.text = _materialValues[4].ToString(); } return; };
+			action.OnHighlight += delegate () { if (_isAnimating || _modSolved) { return; } if (Array.IndexOf(_actionButtons, action) == 6) { UpdateText(4); } return; };
 			action.OnHighlightEnded += delegate () { _materialValueText.text = ""; return; };
 		}
 
@@ -215,6 +216,8 @@ public class MinecraftSurvival : MonoBehaviour {
 			UpdateHunger();
 			return;
 		}
+		int current = 0;
+		int diff = 0;
 		// Overworld: 42 19 20 21 22 23 25 24
 		// Nether: 34 26 27 28
 		// End: 29 25 30 31
@@ -224,189 +227,237 @@ public class MinecraftSurvival : MonoBehaviour {
 			case 0:
 				if (!(_materialValues[9] >= 1)) {
 					GetComponent<KMBombModule>().HandleStrike();
-					Debug.LogFormat("[Minecraft Survival #{0}]: Strike! There wasn't enough required.",_modID);
+					Debug.LogFormat("[Minecraft Survival #{0}]: Strike! You don't have a {1}.",_modID, GetResourceType(9));
+					Debug.LogFormat("[Minecraft Survival #{0}]: Honestly though, how did you manage that?",_modID);
 					break;
 				}
 				if (_materialValues[42] >= 64 || _materialValues[42] + 2 >= 64) { _materialValues[42] = 64; UpdateText(42); break; }
 				_materialValues[42] += 2;
 				UpdateText(42);
+				current = 42;
+				diff = 2;
 				break;
 			case 1:
 				if (!(_materialValues[5] >= 1 || _materialValues[6] >= 1 || _materialValues[7] >= 1 || _materialValues[8] >= 1))
 				{
 					GetComponent<KMBombModule>().HandleStrike();
-					Debug.LogFormat("[Minecraft Survival #{0}]: Strike! There wasn't enough required.", _modID);
+					Debug.LogFormat("[Minecraft Survival #{0}]: Strike! Unable to gather {2}. You don't have a {1}.", _modID, GetResourceType(5), GetResourceName(19));
 					break;
 				}
 				int rnd = rand.Range(1,4);
 				if (_materialValues[19] >= 64 || _materialValues[19] + rnd >= 64 ) { _materialValues[19] = 64; UpdateText(19); break; }
 				_materialValues[19] += rnd;
 				UpdateText(19);
+				current = 19;
+				diff = rnd;
 				break;
 			case 2:
 				if (!(_materialValues[5] >= 1 || _materialValues[6] >= 1 || _materialValues[7] >= 1 || _materialValues[8] >= 1))
 				{
 					GetComponent<KMBombModule>().HandleStrike();
-					Debug.LogFormat("[Minecraft Survival #{0}]: Strike! There wasn't enough required.", _modID);
+					Debug.LogFormat("[Minecraft Survival #{0}]: Strike! Unable to gather {2}. You don't have a {1}.", _modID, GetResourceType(5), GetResourceName(20));
 					break;
 				}
 				rnd = rand.Range(3,6);
 				if (_materialValues[20] >= 64 || _materialValues[20]+rnd >= 64 ) { _materialValues[20] = 64; UpdateText(20); break; }
 				_materialValues[20] += rnd;
 				UpdateText(20);
+				current = 20;
+				diff = rnd;
 				break;
 			case 3:
 				if (_materialValues[5] >= 0 && !(_materialValues[6] >= 1 || _materialValues[7] >= 1 || _materialValues[8] >= 1))
 				{
 					GetComponent<KMBombModule>().HandleStrike();
-					Debug.LogFormat("[Minecraft Survival #{0}]: Strike! There wasn't enough required.", _modID);
+					Debug.LogFormat("[Minecraft Survival #{0}]: Strike! Unable to gather {2}. You don't have the right {1}.", _modID, GetResourceType(6), GetResourceName(21));
 					break;
 				}
 				rnd = rand.Range(1, 4);
 				if (_materialValues[21] >= 64 || _materialValues[21]+rnd >= 64) { _materialValues[21] = 64; UpdateText(21); break; }
 				_materialValues[21] += rnd;
 				UpdateText(21);
+				current = 21;
+				diff = rnd;
 				break;
 			case 4:
 				if ((_materialValues[5] >= 0 && _materialValues[6] >= 0) && !(_materialValues[7] >= 1 || _materialValues[8] >= 1))
 				{
 					GetComponent<KMBombModule>().HandleStrike();
-					Debug.LogFormat("[Minecraft Survival #{0}]: Strike! There wasn't enough required.", _modID);
+					Debug.LogFormat("[Minecraft Survival #{0}]: Strike! Unable to gather {2}. You don't have the right {1}.", _modID, GetResourceType(7), GetResourceName(22));
 					break;
 				}
 				rnd = rand.Range(1, 3);
 				if (_materialValues[22] >= 64 || _materialValues[22]+rnd >= 64) { _materialValues[22] = 64; UpdateText(22); break; }
 				_materialValues[22] += rnd;
 				UpdateText(22);
+				current = 22;
+				diff = rnd;
 				break;
 			case 5:
 				if (!(_materialValues[10] >= 1)) {
 					GetComponent<KMBombModule>().HandleStrike();
-					Debug.LogFormat("[Minecraft Survival #{0}]: Strike! There wasn't enough required.", _modID);
+					Debug.LogFormat("[Minecraft Survival #{0}]: Strike! Unable to gather {2}. You don't have a {1}.", _modID, GetResourceType(10), GetResourceName(23));
 					break;
 				}
 				if (_materialValues[23] >= 64 || _materialValues[23]+1 >= 64) { _materialValues[23] = 64; UpdateText(23); break; }
 				_materialValues[23]++;
 				UpdateText(23);
+				current = 23;
+				diff = 1;
 				break;
 			case 6:
 				if ((_materialValues[5] >= 0 && _materialValues[6] >= 0 && _materialValues[7] >= 0) && !(_materialValues[8] >= 1))
 				{
 					GetComponent<KMBombModule>().HandleStrike();
-					Debug.LogFormat("[Minecraft Survival #{0}]: Strike! There wasn't enough required.", _modID);
+					Debug.LogFormat("[Minecraft Survival #{0}]: Strike! Unable to gather {2}. You don't have a {1}.", _modID, GetResourceName(8), GetResourceName(25));
 					break;
 				}
 				rnd = rand.Range(1, 3);
 				if (_materialValues[25] >= 64 || _materialValues[25]+rnd >= 64) { _materialValues[25] = 64; UpdateText(25); break; }
 				_materialValues[25] += rnd;
 				UpdateText(25);
+				current = 25;
+				diff = rnd;
 				break;
 			case 7:
 				if (!(_materialValues[11] >= 1 || _materialValues[12] >= 1 || _materialValues[13] >= 1 || _materialValues[14] >= 1))
 				{
 					GetComponent<KMBombModule>().HandleStrike();
-					Debug.LogFormat("[Minecraft Survival #{0}]: Strike! There wasn't enough required.", _modID);
+					Debug.LogFormat("[Minecraft Survival #{0}]: Strike! Unable to gather {2}. You don't have a {1}.", _modID, GetResourceType(11), GetResourceName(24));
 					break;
 				}
 				rnd = rand.Range(1, 4);
 				if (_materialValues[24] >= 64 || _materialValues[24]+rnd >= 64) { _materialValues[24] = 64; UpdateText(24); break; }
 				_materialValues[24] += rnd;
 				UpdateText(24);
+				current = 24;
+				diff = rnd;
 				break;
 			// Nether
 			case 8:
 				if (!(_materialValues[5] >= 1 || _materialValues[6] >= 1 || _materialValues[7] >= 1 || _materialValues[8] >= 1)) {
 					GetComponent<KMBombModule>().HandleStrike();
-					Debug.LogFormat("[Minecraft Survival #{0}]: Strike! There wasn't enough required.", _modID);
+					Debug.LogFormat("[Minecraft Survival #{0}]: Strike! You don't have a {1}.", _modID, GetResourceType(5));
+					Debug.LogFormat("[Minecraft Survival #{0}]: Honestly though, how did you even manage that?", _modID);
 					break;
 				}
 				rnd = rand.Range(2, 5);
 				if (_materialValues[34] >= 64 || _materialValues[34] + rnd >= 64) { _materialValues[34] = 64; UpdateText(34); break; }
 				_materialValues[34] += rnd;
 				UpdateText(34);
+				current = 34;
+				diff = rnd;
 				break;
 			case 9:
 				if ((_materialValues[5] >= 0 && _materialValues[6] >= 0) && !(_materialValues[7] >= 1 || _materialValues[8] >= 1))
 				{
 					GetComponent<KMBombModule>().HandleStrike();
-					Debug.LogFormat("[Minecraft Survival #{0}]: Strike! There wasn't enough required.", _modID);
+					Debug.LogFormat("[Minecraft Survival #{0}]: Strike! You don't have the right {1}.", _modID, GetResourceType(7));
+					Debug.LogFormat("[Minecraft Survival #{0}]: How did you even get in the Nether anyway?", _modID);
 					break;
 				}
 				if (_materialValues[26] >= 64 || _materialValues[26] + 2 >= 64) { _materialValues[26] = 64; UpdateText(26); break; }
 				_materialValues[26] += 2;
 				UpdateText(26);
+				current = 26;
+				diff = 2;
 				break;
 			case 10:
 				if ((_materialValues[5] >= 0 && _materialValues[6] >= 0) && !(_materialValues[7] >= 1 || _materialValues[8] >= 1))
 				{
 					GetComponent<KMBombModule>().HandleStrike();
-					Debug.LogFormat("[Minecraft Survival #{0}]: Strike! There wasn't enough required.", _modID);
+					Debug.LogFormat("[Minecraft Survival #{0}]: Strike! You don't have the right {1}.", _modID, GetResourceType(7));
+					Debug.LogFormat("[Minecraft Survival #{0}]: You should go back to the Overworld and unlock the Nether.", _modID);
 					break;
 				}
 				if (_materialValues[27] >= 64 || _materialValues[27] + 2 >= 64) { _materialValues[27] = 64; UpdateText(27); break; }
 				_materialValues[27] += 2;
 				UpdateText(27);
+				current = 27;
+				diff = 2;
 				break;
 			case 11:
 				if (!(_materialValues[10] >= 1)) {
 					GetComponent<KMBombModule>().HandleStrike();
-					Debug.LogFormat("[Minecraft Survival #{0}]: Strike! There wasn't enough required.", _modID);
+					Debug.LogFormat("[Minecraft Survival #{0}]: Strike! You don't have a {1}.", _modID, GetResourceType(10));
+					Debug.LogFormat("[Minecraft Survival #{0}]: Once you do get one, make sure to get some Flint so you can light the Nether portal.", _modID);
 					break;
 				}
 				if (_materialValues[28] >= 64 || _materialValues[28] + 2 >= 64) { _materialValues[28] = 64; UpdateText(28); break; }
 				_materialValues[28] += 2;
 				UpdateText(28);
+				current = 28;
+				diff = 2;
 				break;
 			// End
 			case 12:
 				if (!(_materialValues[5] >= 1 || _materialValues[6] >= 1 || _materialValues[7] >= 1 || _materialValues[8] >= 1))
 				{
 					GetComponent<KMBombModule>().HandleStrike();
-					Debug.LogFormat("[Minecraft Survival #{0}]: Strike! There wasn't enough required.", _modID);
+					Debug.LogFormat("[Minecraft Survival #{0}]: Strike! You don't have a {1}.", _modID, GetResourceType(5));
+					Debug.LogFormat("[Minecraft Survival #{0}]: Did we forget to lock The End again?", _modID);
 					break;
 				}
 				rnd = rand.Range(2, 4);
 				if (_materialValues[29] >= 64 || _materialValues[29] + rnd >= 64) { _materialValues[29] = 64; UpdateText(29); break; }
 				_materialValues[29] += rnd;
 				UpdateText(29);
+				current = 29;
+				diff = rnd;
 				break;
 			case 13:
 				if ((_materialValues[5] >= 0 && _materialValues[6] >= 0 && _materialValues[7] >= 0) && !(_materialValues[8] >= 1))
 				{
 					GetComponent<KMBombModule>().HandleStrike();
-					Debug.LogFormat("[Minecraft Survival #{0}]: Strike! There wasn't enough required.", _modID);
+					Debug.LogFormat("[Minecraft Survival #{0}]: Strike! You don't have a {1}.", _modID, GetResourceName(8));
+					Debug.LogFormat("[Minecraft Survival #{0}]: Once you do get one, you should get some Obsidian for a Nether portal.", _modID);
 					break;
 				}
 				rnd = rand.Range(2, 4);
 				if (_materialValues[25] >= 64 || _materialValues[25] + rnd >= 64) { _materialValues[25] = 64; UpdateText(25); break; }
 				_materialValues[25] += rnd;
 				UpdateText(25);
+				current = 25;
+				diff = rnd;
 				break;
 			case 14:
 				if (!(_materialValues[5] >= 1 || _materialValues[6] >= 1 || _materialValues[7] >= 1 || _materialValues[8] >= 1))
 				{
 					GetComponent<KMBombModule>().HandleStrike();
-					Debug.LogFormat("[Minecraft Survival #{0}]: Strike! There wasn't enough required.", _modID);
+					Debug.LogFormat("[Minecraft Survival #{0}]: Strike! You don't have a {1}.", _modID, GetResourceType(5));
+					Debug.LogFormat("[Minecraft Survival #{0}]: Good job making it to The End without any resources.", _modID);
 					break;
 				}
 				rnd = rand.Range(3, 5);
 				if (_materialValues[30] >= 64 || _materialValues[30] + rnd >= 64) { _materialValues[30] = 64; UpdateText(30); break; }
 				_materialValues[30] += rnd;
 				UpdateText(30);
+				current = 30;
+				diff = rnd;
 				break;
 			case 15:
 				if (!(_materialValues[10] >= 1)) {
 					GetComponent<KMBombModule>().HandleStrike();
-					Debug.LogFormat("[Minecraft Survival #{0}]: Strike! There wasn't enough required.", _modID);
+					Debug.LogFormat("[Minecraft Survival #{0}]: Strike! You don't have a {1}.", _modID, GetResourceType(10));
+					Debug.LogFormat("[Minecraft Survival #{0}]: You should get one.");
 					break;
 				}
 				if (_materialValues[31] >= 64 || _materialValues[31] + 2 >= 64) { _materialValues[31] = 64; UpdateText(31); break; }
 				_materialValues[31] += 2;
 				UpdateText(31);
+				current = 31;
+				diff = 2;
 				break;
 			default:
-				Debug.LogFormat("[Minecraft Survival {0}]: Unable to update resources.",_modID);
+				Debug.LogFormat("[Minecraft Survival #{0}]: Unable to update resources.",_modID);
 				break;
+		}
+		if (current != 0)
+		{
+			string name = GetResourceName(current);
+			if (current == 22 && diff == 1)
+				name = "Diamond";
+			Debug.LogFormat("[Minecraft Survival #{0}]: Gathered {1} {2}.", _modID, diff, name);
 		}
 		_resourceUntilFight--;
 		if (_resourceUntilFight == 0) {
@@ -414,9 +465,32 @@ public class MinecraftSurvival : MonoBehaviour {
 		}
 	}
 
+	void InsufficientMaterials(int resources, int resourceRequirements, int item, bool plural)
+	{
+		InsufficientMaterials(new[] { resources }, new[] { resourceRequirements }, item, plural);
+	}
+
+	void InsufficientMaterials(int[] resources, int[] resourceRequirements, int item, bool plural)
+	{
+		GetComponent<KMBombModule>().HandleStrike();
+		List<string> resourceNames = new List<string>();
+		for (int i = 0; i < resources.Length; i++)
+		{
+			if (_materialValues[resources[i]] < resourceRequirements[i])
+				resourceNames.Add(GetResourceName(resources[i]));
+		}
+		int count = resourceNames.Count;
+		if (count > 2)
+			resourceNames[count - 1] = "or " + resourceNames.Last();
+		string stuff = count != 2 ? string.Join(", ", resourceNames.ToArray()) : (resourceNames[0] + " or " + resourceNames[1]);
+		string result = (plural ? "" : item.EqualsAny(7, 13, 18) ? "an " : "a ") + GetResourceName(item);
+		Debug.LogFormat("[Minecraft Survival #{0}]: Strike! You don't have the correct item or items [{1}] to craft {2}", _modID, stuff, result);
+	}
+
 	void InventoryButton(KMSelectable but) {
 		if (_isAnimating) { return; }
 		int index = Array.IndexOf(_allResourceInventoryIndicies,but);
+		int current = _materialValues[index];
 		if (!index.EqualsAny(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 41, 43)) { return; }
 		switch (index) {
 			case 0:
@@ -427,8 +501,7 @@ public class MinecraftSurvival : MonoBehaviour {
 					UpdateText(0);
 					break;
 				} else {
-					GetComponent<KMBombModule>().HandleStrike();
-					Debug.LogFormat("[Minecraft Survival #{0}]: Strike! Insufficient materials to craft that item.", _modID);
+					InsufficientMaterials(42, 1, index, true);
 					break;
 				}
 			case 1:
@@ -439,8 +512,7 @@ public class MinecraftSurvival : MonoBehaviour {
 					UpdateText(1);
 					break;
 				} else {
-					GetComponent<KMBombModule>().HandleStrike();
-					Debug.LogFormat("[Minecraft Survival #{0}]: Strike! Insufficient materials to craft that item.", _modID);
+					InsufficientMaterials(0, 2, index, true);
 					break;
 				}
 			case 2:
@@ -451,8 +523,7 @@ public class MinecraftSurvival : MonoBehaviour {
 					UpdateText(2);
 					break;
 				} else {
-					GetComponent<KMBombModule>().HandleStrike();
-					Debug.LogFormat("[Minecraft Survival #{0}]: Strike! Insufficient materials to craft that item.", _modID);
+					InsufficientMaterials(19, 8, index, false);
 					break;
 				}
 			case 3:
@@ -465,8 +536,7 @@ public class MinecraftSurvival : MonoBehaviour {
 					UpdateText(3);
 					break;
 				} else {
-					GetComponent<KMBombModule>().HandleStrike();
-					Debug.LogFormat("[Minecraft Survival #{0}]: Strike! Insufficient materials to craft that item.", _modID);
+					InsufficientMaterials(new[] { 2, 21, 20 }, new[] { 1, 1, 1 }, index, true);
 					break;
 				}
 			case 4:
@@ -479,8 +549,7 @@ public class MinecraftSurvival : MonoBehaviour {
 					UpdateText(4);
 					break;
 				} else {
-					GetComponent<KMBombModule>().HandleStrike();
-					Debug.LogFormat("[Minecraft Survival #{0}]: Strike! Insufficient materials to craft that item.", _modID);
+					InsufficientMaterials(new[] { 2, 24, 20 }, new[] { 1, 1, 1 }, index, true);
 					break;
 				}
 			case 5:
@@ -492,8 +561,7 @@ public class MinecraftSurvival : MonoBehaviour {
 					UpdateText(5);
 					break;
 				} else {
-					GetComponent<KMBombModule>().HandleStrike();
-					Debug.LogFormat("[Minecraft Survival #{0}]: Strike! Insufficient materials to craft that item.", _modID);
+					InsufficientMaterials(new[] { 0, 1 }, new[] { 3, 2 }, index, false);
 					break;
 				}
 			case 6:
@@ -505,8 +573,7 @@ public class MinecraftSurvival : MonoBehaviour {
 					UpdateText(6);
 					break;
 				} else {
-					GetComponent<KMBombModule>().HandleStrike();
-					Debug.LogFormat("[Minecraft Survival #{0}]: Strike! Insufficient materials to craft that item.", _modID);
+					InsufficientMaterials(new[] { 5, 19 }, new[] { 1, 4 }, index, false);
 					break;
 				}
 			case 7:
@@ -518,8 +585,7 @@ public class MinecraftSurvival : MonoBehaviour {
 					UpdateText(7);
 					break;
 				} else {
-					GetComponent<KMBombModule>().HandleStrike();
-					Debug.LogFormat("[Minecraft Survival #{0}]: Strike! Insufficient materials to craft that item.", _modID);
+					InsufficientMaterials(new[] { 6, 3 }, new[] { 1, 5 }, index, false);
 					break;
 				}
 			case 8:
@@ -531,8 +597,7 @@ public class MinecraftSurvival : MonoBehaviour {
 					UpdateText(8);
 					break;
 				} else {
-					GetComponent<KMBombModule>().HandleStrike();
-					Debug.LogFormat("[Minecraft Survival #{0}]: Strike! Insufficient materials to craft that item.", _modID);
+					InsufficientMaterials(new[] { 7, 22 }, new[] { 1, 6 }, index, false);
 					break;
 				}
 			case 9:
@@ -544,8 +609,7 @@ public class MinecraftSurvival : MonoBehaviour {
 					UpdateText(9);
 					break;
 				} else {
-					GetComponent<KMBombModule>().HandleStrike();
-					Debug.LogFormat("[Minecraft Survival #{0}]: Strike! Insufficient materials to craft that item.", _modID);
+					InsufficientMaterials(new[] { 0, 1 }, new[] { 3, 2 }, index, false);
 					break;
 				}
 			case 10:
@@ -557,8 +621,7 @@ public class MinecraftSurvival : MonoBehaviour {
 					UpdateText(10);
 					break;
 				} else {
-					GetComponent<KMBombModule>().HandleStrike();
-					Debug.LogFormat("[Minecraft Survival #{0}]: Strike! Insufficient materials to craft that item.", _modID);
+					InsufficientMaterials(new[] { 0, 1 }, new[] { 1, 2 }, index, false);
 					break;
 				}
 			case 11:
@@ -570,8 +633,7 @@ public class MinecraftSurvival : MonoBehaviour {
 					UpdateText(11);
 					break;
 				} else {
-					GetComponent<KMBombModule>().HandleStrike();
-					Debug.LogFormat("[Minecraft Survival #{0}]: Strike! Insufficient materials to craft that item.", _modID);
+					InsufficientMaterials(new[] { 0, 1 }, new[] { 2, 1 }, index, false);
 					break;
 				}
 			case 12:
@@ -583,8 +645,7 @@ public class MinecraftSurvival : MonoBehaviour {
 					UpdateText(12);
 					break;
 				} else {
-					GetComponent<KMBombModule>().HandleStrike();
-					Debug.LogFormat("[Minecraft Survival #{0}]: Strike! Insufficient materials to craft that item.", _modID);
+					InsufficientMaterials(new[] { 11, 19 }, new[] { 1, 4 }, index, false);
 					break;
 				}
 			case 13:
@@ -596,8 +657,7 @@ public class MinecraftSurvival : MonoBehaviour {
 					UpdateText(13);
 					break;
 				} else {
-					GetComponent<KMBombModule>().HandleStrike();
-					Debug.LogFormat("[Minecraft Survival #{0}]: Strike! Insufficient materials to craft that item.", _modID);
+					InsufficientMaterials(new[] { 12, 3 }, new[] { 1, 5 }, index, false);
 					break;
 				}
 			case 14:
@@ -609,8 +669,7 @@ public class MinecraftSurvival : MonoBehaviour {
 					UpdateText(14);
 					break;
 				} else {
-					GetComponent<KMBombModule>().HandleStrike();
-					Debug.LogFormat("[Minecraft Survival #{0}]: Strike! Insufficient materials to craft that item.", _modID);
+					InsufficientMaterials(new[] { 13, 22 }, new[] { 1, 6 }, index, false);
 					break;
 				}
 			case 15:
@@ -621,8 +680,7 @@ public class MinecraftSurvival : MonoBehaviour {
 					UpdateText(15);
 					break;
 				} else {
-					GetComponent<KMBombModule>().HandleStrike();
-					Debug.LogFormat("[Minecraft Survival #{0}]: Strike! Insufficient materials to craft that item.", _modID);
+					InsufficientMaterials(3, 24, index, true);
 					break;
 				}
 			case 16:
@@ -633,8 +691,7 @@ public class MinecraftSurvival : MonoBehaviour {
 					UpdateText(16);
 					break;
 				} else {
-					GetComponent<KMBombModule>().HandleStrike();
-					Debug.LogFormat("[Minecraft Survival #{0}]: Strike! Insufficient materials to craft that item.", _modID);
+					InsufficientMaterials(22, 24, index, true);
 					break;
 				}
 			case 17:
@@ -645,8 +702,7 @@ public class MinecraftSurvival : MonoBehaviour {
 					UpdateText(17);
 					break;
 				} else {
-					GetComponent<KMBombModule>().HandleStrike();
-					Debug.LogFormat("[Minecraft Survival #{0}]: Strike! Insufficient materials to craft that item.", _modID);
+					InsufficientMaterials(32, 1, index, true);
 					break;
 				}
 			case 18:
@@ -658,8 +714,7 @@ public class MinecraftSurvival : MonoBehaviour {
 					UpdateText(18);
 					break;
 				} else {
-					GetComponent<KMBombModule>().HandleStrike();
-					Debug.LogFormat("[Minecraft Survival #{0}]: Strike! Insufficient materials to craft that item.", _modID);
+					InsufficientMaterials(new[] { 17, 33 }, new[] { 1, 1 }, index, false);
 					break;
 				}
 			case 41:
@@ -667,10 +722,10 @@ public class MinecraftSurvival : MonoBehaviour {
 					SolveModule();
 					Debug.LogFormat("[Minecraft Survival #{0}]: Module solved. Have a good time in your world from now on.", _modID);
 					GetComponent<KMBombModule>().HandlePass();
-					break;
+					return;
 				} else {
 					GetComponent<KMBombModule>().HandleStrike();
-					Debug.LogFormat("[Minecraft Survival #{0}]: Strike! Insufficient materials to craft that item.", _modID);
+					Debug.LogFormat("[Minecraft Survival #{0}]: Strike! You have not obtained that item yet!", _modID);
 					break;
 				}
 			case 43:
@@ -682,13 +737,33 @@ public class MinecraftSurvival : MonoBehaviour {
 					UpdateText(43);
 					break;
 				} else {
-					GetComponent<KMBombModule>().HandleStrike();
-					Debug.LogFormat("[Minecraft Survival #{0}]: Strike! Insufficient materials to craft that item.", _modID);
+					InsufficientMaterials(new[] { 3, 23 }, new[] { 1, 1 }, index, true);
 					break;
 				}
 			default:
 				Debug.LogFormat("[Minecraft Survival #{0}]: Unable to find the index of the item.",_modID);
-				break;
+				return;
+		}
+		if (current != _materialValues[index])
+		{
+			int difference = _materialValues[index] - current;
+			string name = GetResourceName(index);
+			string count = "";
+			if (difference == 1)
+			{
+				if (index.EqualsAny(7, 13, 18))
+					count = " an";
+				else if (index == 3)
+				{
+					count = " an";
+					name = "Iron Ingot";
+				}
+				else if (!index.EqualsAny(15, 16))
+					count = " a";
+			}
+			else
+				count = " " + difference;
+			Debug.LogFormat("[Minecraft Survival #{0}]: Crafted{1} {2}.", _modID, count, name);
 		}
 		UpdateText(index);
 	}
@@ -709,6 +784,24 @@ public class MinecraftSurvival : MonoBehaviour {
 	void UpdateAmountDisplayAct(KMSelectable but) {
 		int index = Array.IndexOf(_resourceButtons, but);
 		_materialValueText.text = _materialValues[_materialValueIndex[index]].ToString();
+	}
+
+	string GetResourceName(int index)
+	{
+		return _allResourceInventoryIndicies[index].name;
+	}
+
+	string GetResourceType(int index)
+	{
+		if (5 <= index && index <= 8)
+			return "Pickaxe";
+		if (index == 9)
+			return "Axe";
+		if (index == 10)
+			return "Shovel";
+		if (11 <= index && index <= 14)
+			return "Sword";
+		return "Anything";
 	}
 
 	void StartFightEventHandler() {
@@ -912,8 +1005,8 @@ public class MinecraftSurvival : MonoBehaviour {
 			_mobIndicator.enabled = false;
 			_mobHealthIndicator.text = "";
 			UpdateModule();
-			GiveMobDrop();
-			Debug.LogFormat("[Minecraft Survival #{0}]: The monster has been defeated. Resume gathering! Number of resources gathered till next fight: {1}.", _modID, _resourceUntilFight);
+			int drop = GiveMobDrop();
+			Debug.LogFormat("[Minecraft Survival #{0}]: The monster has been defeated. It dropped {1}. Resume gathering! Number of resources gathered till next fight: {2}.", _modID, drop > 1 ? drop + " items" : "an item", _resourceUntilFight);
 			return;
 		}
 		int monsterChance = !(_gMonsterName.Equals("Ender Dragon")) ? rand.Range(1, 5) : rand.Range(1, 26);
@@ -1336,56 +1429,68 @@ public class MinecraftSurvival : MonoBehaviour {
 		UpdateHunger();
 	}
 
-	void GiveMobDrop() {
+	int GiveMobDrop() {
+		int num = 0;
 		switch (_gMonsterName)
 		{
 			case "Zombie":
 				if (_materialValues[35] >= 64 || _materialValues[35] + 1 >= 64) { _materialValues[35] = 64; break; }
 				_materialValues[35]++;
+				num = 1;
 				break;
 			case "Skeleton":
 				int rnd = rand.Range(2, 4);
 				if (_materialValues[36] >= 64 || _materialValues[36] + rnd >= 64) { _materialValues[36] = 64; break; }
 				_materialValues[36] += rnd;
+				num = rnd;
 				break;
 			case "Spider":
 				if (_materialValues[37] >= 64 || _materialValues[37] + 2 >= 64) { _materialValues[37] = 64; break; }
 				_materialValues[37] += 2;
+				num = 2;
 				break;
 			case "Creeper":
 				if (_materialValues[38] >= 64 || _materialValues[38] + 1 >= 64) { _materialValues[38] = 64; break; }
 				_materialValues[38]++;
+				num = 1;
 				break;
 			case "Slime":
 				rnd = rand.Range(2, 4);
 				if (_materialValues[39] >= 64 || _materialValues[39] + rnd >= 64) { _materialValues[39] = 64; break; }
 				_materialValues[39] += rnd;
+				num = rnd;
 				break;
 			case "Pigman":
 				if (_materialValues[35] >= 64 || _materialValues[35] + 2 >= 64) { _materialValues[35] = 64; break; }
 				_materialValues[35] += 2;
+				num = 2;
 				break;
 			case "Blaze":
 				if (_materialValues[32] >= 64 || _materialValues[32] + 2 >= 64) { _materialValues[32] = 64; break; }
 				_materialValues[32] += 2;
+				num = 2;
 				break;
 			case "Wither Skeleton":
 				rnd = rand.Range(2, 5);
 				if (_materialValues[20] >= 64 || _materialValues[20] + rnd >= 64) { _materialValues[20] = 64; break; }
 				_materialValues[20] += rnd;
+				num = rnd;
 				break;
 			case "Enderman":
 				if (_materialValues[33] >= 64 || _materialValues[33] + 2 >= 64) { _materialValues[33] = 64; break; }
 				_materialValues[33] += 2;
+				num = 2;
 				break;
 			case "Shulker":
 				if (_materialValues[40] >= 64 || _materialValues[40] + 1 >= 64) { _materialValues[40] = 64; break; }
 				_materialValues[40]++;
+				num = 1;
 				break;
 			default:
-				Debug.LogFormat("[Minecraft Survival #{0}]: Unable to find monster informaton.");
+				Debug.LogFormat("[Minecraft Survival #{0}]: Unable to find monster informaton.", _modID);
 				break;
 		}
+		return num;
 	}
 
 	void SolveModule() {
