@@ -512,7 +512,6 @@ public class MinecraftSurvival : MonoBehaviour
 		string result = (plural ? "" : item.EqualsAny(7, 13, 18) ? "an " : "a ") + GetResourceName(item);
 		Debug.LogFormat("[Minecraft Survival #{0}]: Strike! You don't have the correct item or items [{1}] to craft {2}", _modID, stuff, result);
 	}
-
 	void InventoryButton(KMSelectable but)
 	{
 		if (_isAnimating) { return; }
