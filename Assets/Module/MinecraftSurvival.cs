@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using UnityEngine;
 using rand = UnityEngine.Random;
 
@@ -100,7 +101,6 @@ public class MinecraftSurvival : MonoBehaviour
 
 		foreach (KMSelectable resource in _resourceButtons)
 		{
-
 			resource.OnInteract += delegate () { if (_modSolved) { return false; } resource.AddInteractionPunch(); ResourceButton(resource); return false; };
 			resource.OnHighlight += delegate () { if (_isAnimating || _modSolved) { return; } UpdateAmountDisplayAct(resource); return; };
 			resource.OnHighlightEnded += delegate () { _materialValueText.text = ""; return; };
@@ -108,7 +108,6 @@ public class MinecraftSurvival : MonoBehaviour
 
 		foreach (KMSelectable inv in _allResourceInventoryIndicies)
 		{
-
 			inv.OnInteract += delegate () { if (_modSolved) { return false; } inv.AddInteractionPunch(); InventoryButton(inv); return false; };
 			inv.OnHighlight += delegate () { if (_isAnimating || _modSolved) { return; } UpdateAmountDisplayInv(inv); return; };
 			inv.OnHighlightEnded += delegate () { _materialValueText.text = ""; return; };
@@ -147,12 +146,12 @@ public class MinecraftSurvival : MonoBehaviour
 					_isNetherUnlocked = true;
 					_dimensionIndex = 1;
 					UpdateModule();
-					Debug.LogFormat("[Minecraft Survival #{0}]: Unlocked 'The Nether'.", _modID);
+					Debug.LogFormat("[Minecraft Survival #{0}] Unlocked 'The Nether'.", _modID);
 				}
 				if (!_isNetherUnlocked)
 				{
 					GetComponent<KMBombModule>().HandleStrike();
-					Debug.LogFormat("[Minecraft Survival #{0}]: Strike! Tried to access The Nether without it being unlocked.", _modID);
+					Debug.LogFormat("[Minecraft Survival #{0}] Strike! Tried to access The Nether without it being unlocked.", _modID);
 					break;
 				}
 				_dimensionIndex = 1;
@@ -169,12 +168,12 @@ public class MinecraftSurvival : MonoBehaviour
 					_isEndUnlocked = true;
 					_dimensionIndex = 2;
 					UpdateModule();
-					Debug.LogFormat("[Minecraft Survival #{0}]: Unlocked 'The End'.", _modID);
+					Debug.LogFormat("[Minecraft Survival #{0}] Unlocked 'The End'.", _modID);
 				}
 				if (!_isEndUnlocked)
 				{
 					GetComponent<KMBombModule>().HandleStrike();
-					Debug.LogFormat("[Minecraft Survival #{0}]: Strike! Tried to access The End without it being unlocked.", _modID);
+					Debug.LogFormat("[Minecraft Survival #{0}] Strike! Tried to access The End without it being unlocked.", _modID);
 					break;
 				}
 				_dimensionIndex = 2;
@@ -218,7 +217,7 @@ public class MinecraftSurvival : MonoBehaviour
 				}
 				break;
 			default:
-				Debug.LogFormat("[Minecraft Survival #{0}]: Unable to change the dimension of the module.", _modID);
+				Debug.LogFormat("[Minecraft Survival #{0}] Unable to change the dimension of the module.", _modID);
 				break;
 		}
 	}
@@ -230,7 +229,7 @@ public class MinecraftSurvival : MonoBehaviour
 		if (_playerHunger == 0)
 		{
 			GetComponent<KMBombModule>().HandleStrike();
-			Debug.LogFormat("[Minecraft Survival #{0}]: Strike! You didnt have enough hunger to obtain resources.", _modID);
+			Debug.LogFormat("[Minecraft Survival #{0}] Strike! You didnt have enough hunger to obtain resources.", _modID);
 			_playerHunger = 10;
 			UpdateHunger();
 			return;
@@ -248,12 +247,21 @@ public class MinecraftSurvival : MonoBehaviour
 				if (!(_materialValues[9] >= 1))
 				{
 					GetComponent<KMBombModule>().HandleStrike();
-					Debug.LogFormat("[Minecraft Survival #{0}]: Strike! You don't have a {1}.", _modID, GetResourceType(9));
-					Debug.LogFormat("[Minecraft Survival #{0}]: Honestly though, how did you manage that?", _modID);
+					Debug.LogFormat("[Minecraft Survival #{0}] Strike! You don't have a {1}.", _modID, GetResourceType(9));
+					Debug.LogFormat("[Minecraft Survival #{0}] Honestly though, how did you manage that?", _modID);
 					break;
 				}
 				if (_materialValues[42] >= 64 || _materialValues[42] + 2 >= 64) { _materialValues[42] = 64; UpdateText(42); break; }
-				_materialValues[42] += 2;
+                int rnd2 = rand.Range(0, 4);
+                if (rnd2 == 0)
+                    bAudio.PlaySoundAtTransform("wood1", transform);
+                else if (rnd2 == 1)
+                    bAudio.PlaySoundAtTransform("wood2", transform);
+                else if (rnd2 == 2)
+                    bAudio.PlaySoundAtTransform("wood3", transform);
+                else if (rnd2 == 3)
+                    bAudio.PlaySoundAtTransform("wood4", transform);
+                _materialValues[42] += 2;
 				UpdateText(42);
 				current = 42;
 				diff = 2;
@@ -262,12 +270,21 @@ public class MinecraftSurvival : MonoBehaviour
 				if (!(_materialValues[5] >= 1 || _materialValues[6] >= 1 || _materialValues[7] >= 1 || _materialValues[8] >= 1))
 				{
 					GetComponent<KMBombModule>().HandleStrike();
-					Debug.LogFormat("[Minecraft Survival #{0}]: Strike! Unable to gather {2}. You don't have a {1}.", _modID, GetResourceType(5), GetResourceName(19));
+					Debug.LogFormat("[Minecraft Survival #{0}] Strike! Unable to gather {2}. You don't have a {1}.", _modID, GetResourceType(5), GetResourceName(19));
 					break;
 				}
 				int rnd = rand.Range(1, 4);
 				if (_materialValues[19] >= 64 || _materialValues[19] + rnd >= 64) { _materialValues[19] = 64; UpdateText(19); break; }
-				_materialValues[19] += rnd;
+                rnd2 = rand.Range(0, 4);
+                if (rnd2 == 0)
+                    bAudio.PlaySoundAtTransform("stone1", transform);
+                else if (rnd2 == 1)
+                    bAudio.PlaySoundAtTransform("stone2", transform);
+                else if (rnd2 == 2)
+                    bAudio.PlaySoundAtTransform("stone3", transform);
+                else if (rnd2 == 3)
+                    bAudio.PlaySoundAtTransform("stone4", transform);
+                _materialValues[19] += rnd;
 				UpdateText(19);
 				current = 19;
 				diff = rnd;
@@ -276,12 +293,21 @@ public class MinecraftSurvival : MonoBehaviour
 				if (!(_materialValues[5] >= 1 || _materialValues[6] >= 1 || _materialValues[7] >= 1 || _materialValues[8] >= 1))
 				{
 					GetComponent<KMBombModule>().HandleStrike();
-					Debug.LogFormat("[Minecraft Survival #{0}]: Strike! Unable to gather {2}. You don't have a {1}.", _modID, GetResourceType(5), GetResourceName(20));
+					Debug.LogFormat("[Minecraft Survival #{0}] Strike! Unable to gather {2}. You don't have a {1}.", _modID, GetResourceType(5), GetResourceName(20));
 					break;
 				}
 				rnd = rand.Range(3, 6);
 				if (_materialValues[20] >= 64 || _materialValues[20] + rnd >= 64) { _materialValues[20] = 64; UpdateText(20); break; }
-				_materialValues[20] += rnd;
+                rnd2 = rand.Range(0, 4);
+                if (rnd2 == 0)
+                    bAudio.PlaySoundAtTransform("stone1", transform);
+                else if (rnd2 == 1)
+                    bAudio.PlaySoundAtTransform("stone2", transform);
+                else if (rnd2 == 2)
+                    bAudio.PlaySoundAtTransform("stone3", transform);
+                else if (rnd2 == 3)
+                    bAudio.PlaySoundAtTransform("stone4", transform);
+                _materialValues[20] += rnd;
 				UpdateText(20);
 				current = 20;
 				diff = rnd;
@@ -290,12 +316,21 @@ public class MinecraftSurvival : MonoBehaviour
 				if (_materialValues[5] >= 0 && !(_materialValues[6] >= 1 || _materialValues[7] >= 1 || _materialValues[8] >= 1))
 				{
 					GetComponent<KMBombModule>().HandleStrike();
-					Debug.LogFormat("[Minecraft Survival #{0}]: Strike! Unable to gather {2}. You don't have the right {1}.", _modID, GetResourceType(6), GetResourceName(21));
+					Debug.LogFormat("[Minecraft Survival #{0}] Strike! Unable to gather {2}. You don't have the right {1}.", _modID, GetResourceType(6), GetResourceName(21));
 					break;
 				}
 				rnd = rand.Range(1, 4);
 				if (_materialValues[21] >= 64 || _materialValues[21] + rnd >= 64) { _materialValues[21] = 64; UpdateText(21); break; }
-				_materialValues[21] += rnd;
+                rnd2 = rand.Range(0, 4);
+                if (rnd2 == 0)
+                    bAudio.PlaySoundAtTransform("stone1", transform);
+                else if (rnd2 == 1)
+                    bAudio.PlaySoundAtTransform("stone2", transform);
+                else if (rnd2 == 2)
+                    bAudio.PlaySoundAtTransform("stone3", transform);
+                else if (rnd2 == 3)
+                    bAudio.PlaySoundAtTransform("stone4", transform);
+                _materialValues[21] += rnd;
 				UpdateText(21);
 				current = 21;
 				diff = rnd;
@@ -304,12 +339,21 @@ public class MinecraftSurvival : MonoBehaviour
 				if ((_materialValues[5] >= 0 && _materialValues[6] >= 0) && !(_materialValues[7] >= 1 || _materialValues[8] >= 1))
 				{
 					GetComponent<KMBombModule>().HandleStrike();
-					Debug.LogFormat("[Minecraft Survival #{0}]: Strike! Unable to gather {2}. You don't have the right {1}.", _modID, GetResourceType(7), GetResourceName(22));
+					Debug.LogFormat("[Minecraft Survival #{0}] Strike! Unable to gather {2}. You don't have the right {1}.", _modID, GetResourceType(7), GetResourceName(22));
 					break;
 				}
 				rnd = rand.Range(1, 3);
 				if (_materialValues[22] >= 64 || _materialValues[22] + rnd >= 64) { _materialValues[22] = 64; UpdateText(22); break; }
-				_materialValues[22] += rnd;
+                rnd2 = rand.Range(0, 4);
+                if (rnd2 == 0)
+                    bAudio.PlaySoundAtTransform("stone1", transform);
+                else if (rnd2 == 1)
+                    bAudio.PlaySoundAtTransform("stone2", transform);
+                else if (rnd2 == 2)
+                    bAudio.PlaySoundAtTransform("stone3", transform);
+                else if (rnd2 == 3)
+                    bAudio.PlaySoundAtTransform("stone4", transform);
+                _materialValues[22] += rnd;
 				UpdateText(22);
 				current = 22;
 				diff = rnd;
@@ -318,11 +362,20 @@ public class MinecraftSurvival : MonoBehaviour
 				if (!(_materialValues[10] >= 1))
 				{
 					GetComponent<KMBombModule>().HandleStrike();
-					Debug.LogFormat("[Minecraft Survival #{0}]: Strike! Unable to gather {2}. You don't have a {1}.", _modID, GetResourceType(10), GetResourceName(23));
+					Debug.LogFormat("[Minecraft Survival #{0}] Strike! Unable to gather {2}. You don't have a {1}.", _modID, GetResourceType(10), GetResourceName(23));
 					break;
 				}
 				if (_materialValues[23] >= 64 || _materialValues[23] + 1 >= 64) { _materialValues[23] = 64; UpdateText(23); break; }
-				_materialValues[23]++;
+                rnd2 = rand.Range(0, 4);
+                if (rnd2 == 0)
+                    bAudio.PlaySoundAtTransform("gravel1", transform);
+                else if (rnd2 == 1)
+                    bAudio.PlaySoundAtTransform("gravel2", transform);
+                else if (rnd2 == 2)
+                    bAudio.PlaySoundAtTransform("gravel3", transform);
+                else if (rnd2 == 3)
+                    bAudio.PlaySoundAtTransform("gravel4", transform);
+                _materialValues[23]++;
 				UpdateText(23);
 				current = 23;
 				diff = 1;
@@ -331,12 +384,21 @@ public class MinecraftSurvival : MonoBehaviour
 				if ((_materialValues[5] >= 0 && _materialValues[6] >= 0 && _materialValues[7] >= 0) && !(_materialValues[8] >= 1))
 				{
 					GetComponent<KMBombModule>().HandleStrike();
-					Debug.LogFormat("[Minecraft Survival #{0}]: Strike! Unable to gather {2}. You don't have a {1}.", _modID, GetResourceName(8), GetResourceName(25));
+					Debug.LogFormat("[Minecraft Survival #{0}] Strike! Unable to gather {2}. You don't have a {1}.", _modID, GetResourceName(8), GetResourceName(25));
 					break;
 				}
 				rnd = rand.Range(1, 3);
 				if (_materialValues[25] >= 64 || _materialValues[25] + rnd >= 64) { _materialValues[25] = 64; UpdateText(25); break; }
-				_materialValues[25] += rnd;
+                rnd2 = rand.Range(0, 4);
+                if (rnd2 == 0)
+                    bAudio.PlaySoundAtTransform("stone1", transform);
+                else if (rnd2 == 1)
+                    bAudio.PlaySoundAtTransform("stone2", transform);
+                else if (rnd2 == 2)
+                    bAudio.PlaySoundAtTransform("stone3", transform);
+                else if (rnd2 == 3)
+                    bAudio.PlaySoundAtTransform("stone4", transform);
+                _materialValues[25] += rnd;
 				UpdateText(25);
 				current = 25;
 				diff = rnd;
@@ -345,10 +407,17 @@ public class MinecraftSurvival : MonoBehaviour
 				if (!(_materialValues[11] >= 1 || _materialValues[12] >= 1 || _materialValues[13] >= 1 || _materialValues[14] >= 1))
 				{
 					GetComponent<KMBombModule>().HandleStrike();
-					Debug.LogFormat("[Minecraft Survival #{0}]: Strike! Unable to gather {2}. You don't have a {1}.", _modID, GetResourceType(11), GetResourceName(24));
+					Debug.LogFormat("[Minecraft Survival #{0}] Strike! Unable to gather {2}. You don't have a {1}.", _modID, GetResourceType(11), GetResourceName(24));
 					break;
 				}
-				rnd = rand.Range(1, 4);
+                rnd = rand.Range(0, 3);
+                if (rnd == 0)
+                    bAudio.PlaySoundAtTransform("cow1", transform);
+                else if (rnd == 1)
+                    bAudio.PlaySoundAtTransform("cow2", transform);
+                else if (rnd == 2)
+                    bAudio.PlaySoundAtTransform("cow3", transform);
+                rnd = rand.Range(1, 4);
 				if (_materialValues[24] >= 64 || _materialValues[24] + rnd >= 64) { _materialValues[24] = 64; UpdateText(24); break; }
 				_materialValues[24] += rnd;
 				UpdateText(24);
@@ -360,13 +429,22 @@ public class MinecraftSurvival : MonoBehaviour
 				if (!(_materialValues[5] >= 1 || _materialValues[6] >= 1 || _materialValues[7] >= 1 || _materialValues[8] >= 1))
 				{
 					GetComponent<KMBombModule>().HandleStrike();
-					Debug.LogFormat("[Minecraft Survival #{0}]: Strike! You don't have a {1}.", _modID, GetResourceType(5));
-					Debug.LogFormat("[Minecraft Survival #{0}]: Honestly though, how did you even manage that?", _modID);
+					Debug.LogFormat("[Minecraft Survival #{0}] Strike! You don't have a {1}.", _modID, GetResourceType(5));
+					Debug.LogFormat("[Minecraft Survival #{0}] Honestly though, how did you even manage that?", _modID);
 					break;
 				}
 				rnd = rand.Range(2, 5);
 				if (_materialValues[34] >= 64 || _materialValues[34] + rnd >= 64) { _materialValues[34] = 64; UpdateText(34); break; }
-				_materialValues[34] += rnd;
+                rnd2 = rand.Range(0, 4);
+                if (rnd2 == 0)
+                    bAudio.PlaySoundAtTransform("stone1", transform);
+                else if (rnd2 == 1)
+                    bAudio.PlaySoundAtTransform("stone2", transform);
+                else if (rnd2 == 2)
+                    bAudio.PlaySoundAtTransform("stone3", transform);
+                else if (rnd2 == 3)
+                    bAudio.PlaySoundAtTransform("stone4", transform);
+                _materialValues[34] += rnd;
 				UpdateText(34);
 				current = 34;
 				diff = rnd;
@@ -375,12 +453,21 @@ public class MinecraftSurvival : MonoBehaviour
 				if ((_materialValues[5] >= 0 && _materialValues[6] >= 0) && !(_materialValues[7] >= 1 || _materialValues[8] >= 1))
 				{
 					GetComponent<KMBombModule>().HandleStrike();
-					Debug.LogFormat("[Minecraft Survival #{0}]: Strike! You don't have the right {1}.", _modID, GetResourceType(7));
-					Debug.LogFormat("[Minecraft Survival #{0}]: How did you even get in the Nether anyway?", _modID);
+					Debug.LogFormat("[Minecraft Survival #{0}] Strike! You don't have the right {1}.", _modID, GetResourceType(7));
+					Debug.LogFormat("[Minecraft Survival #{0}] How did you even get in the Nether anyway?", _modID);
 					break;
 				}
 				if (_materialValues[26] >= 64 || _materialValues[26] + 2 >= 64) { _materialValues[26] = 64; UpdateText(26); break; }
-				_materialValues[26] += 2;
+                rnd2 = rand.Range(0, 4);
+                if (rnd2 == 0)
+                    bAudio.PlaySoundAtTransform("stone1", transform);
+                else if (rnd2 == 1)
+                    bAudio.PlaySoundAtTransform("stone2", transform);
+                else if (rnd2 == 2)
+                    bAudio.PlaySoundAtTransform("stone3", transform);
+                else if (rnd2 == 3)
+                    bAudio.PlaySoundAtTransform("stone4", transform);
+                _materialValues[26] += 2;
 				UpdateText(26);
 				current = 26;
 				diff = 2;
@@ -389,12 +476,19 @@ public class MinecraftSurvival : MonoBehaviour
 				if ((_materialValues[5] >= 0 && _materialValues[6] >= 0) && !(_materialValues[7] >= 1 || _materialValues[8] >= 1))
 				{
 					GetComponent<KMBombModule>().HandleStrike();
-					Debug.LogFormat("[Minecraft Survival #{0}]: Strike! You don't have the right {1}.", _modID, GetResourceType(7));
-					Debug.LogFormat("[Minecraft Survival #{0}]: You should go back to the Overworld and unlock the Nether.", _modID);
+					Debug.LogFormat("[Minecraft Survival #{0}] Strike! You don't have the right {1}.", _modID, GetResourceType(7));
+					Debug.LogFormat("[Minecraft Survival #{0}] You should go back to the Overworld and unlock the Nether.", _modID);
 					break;
 				}
 				if (_materialValues[27] >= 64 || _materialValues[27] + 2 >= 64) { _materialValues[27] = 64; UpdateText(27); break; }
-				_materialValues[27] += 2;
+                rnd2 = rand.Range(0, 3);
+                if (rnd2 == 0)
+                    bAudio.PlaySoundAtTransform("glass1", transform);
+                else if (rnd2 == 1)
+                    bAudio.PlaySoundAtTransform("glass2", transform);
+                else if (rnd2 == 2)
+                    bAudio.PlaySoundAtTransform("glass3", transform);
+                _materialValues[27] += 2;
 				UpdateText(27);
 				current = 27;
 				diff = 2;
@@ -403,12 +497,21 @@ public class MinecraftSurvival : MonoBehaviour
 				if (!(_materialValues[10] >= 1))
 				{
 					GetComponent<KMBombModule>().HandleStrike();
-					Debug.LogFormat("[Minecraft Survival #{0}]: Strike! You don't have a {1}.", _modID, GetResourceType(10));
-					Debug.LogFormat("[Minecraft Survival #{0}]: Once you do get one, make sure to get some Flint so you can light the Nether portal.", _modID);
+					Debug.LogFormat("[Minecraft Survival #{0}] Strike! You don't have a {1}.", _modID, GetResourceType(10));
+					Debug.LogFormat("[Minecraft Survival #{0}] Once you do get one, make sure to get some Flint so you can light the Nether portal.", _modID);
 					break;
 				}
 				if (_materialValues[28] >= 64 || _materialValues[28] + 2 >= 64) { _materialValues[28] = 64; UpdateText(28); break; }
-				_materialValues[28] += 2;
+                rnd2 = rand.Range(0, 4);
+                if (rnd2 == 0)
+                    bAudio.PlaySoundAtTransform("sand1", transform);
+                else if (rnd2 == 1)
+                    bAudio.PlaySoundAtTransform("sand2", transform);
+                else if (rnd2 == 2)
+                    bAudio.PlaySoundAtTransform("sand3", transform);
+                else if (rnd2 == 3)
+                    bAudio.PlaySoundAtTransform("sand4", transform);
+                _materialValues[28] += 2;
 				UpdateText(28);
 				current = 28;
 				diff = 2;
@@ -418,13 +521,22 @@ public class MinecraftSurvival : MonoBehaviour
 				if (!(_materialValues[5] >= 1 || _materialValues[6] >= 1 || _materialValues[7] >= 1 || _materialValues[8] >= 1))
 				{
 					GetComponent<KMBombModule>().HandleStrike();
-					Debug.LogFormat("[Minecraft Survival #{0}]: Strike! You don't have a {1}.", _modID, GetResourceType(5));
-					Debug.LogFormat("[Minecraft Survival #{0}]: Did we forget to lock The End again?", _modID);
+					Debug.LogFormat("[Minecraft Survival #{0}] Strike! You don't have a {1}.", _modID, GetResourceType(5));
+					Debug.LogFormat("[Minecraft Survival #{0}] Did we forget to lock The End again?", _modID);
 					break;
 				}
 				rnd = rand.Range(2, 4);
 				if (_materialValues[29] >= 64 || _materialValues[29] + rnd >= 64) { _materialValues[29] = 64; UpdateText(29); break; }
-				_materialValues[29] += rnd;
+                rnd2 = rand.Range(0, 4);
+                if (rnd2 == 0)
+                    bAudio.PlaySoundAtTransform("stone1", transform);
+                else if (rnd2 == 1)
+                    bAudio.PlaySoundAtTransform("stone2", transform);
+                else if (rnd2 == 2)
+                    bAudio.PlaySoundAtTransform("stone3", transform);
+                else if (rnd2 == 3)
+                    bAudio.PlaySoundAtTransform("stone4", transform);
+                _materialValues[29] += rnd;
 				UpdateText(29);
 				current = 29;
 				diff = rnd;
@@ -433,13 +545,22 @@ public class MinecraftSurvival : MonoBehaviour
 				if ((_materialValues[5] >= 0 && _materialValues[6] >= 0 && _materialValues[7] >= 0) && !(_materialValues[8] >= 1))
 				{
 					GetComponent<KMBombModule>().HandleStrike();
-					Debug.LogFormat("[Minecraft Survival #{0}]: Strike! You don't have a {1}.", _modID, GetResourceName(8));
-					Debug.LogFormat("[Minecraft Survival #{0}]: Once you do get one, you should get some Obsidian for a Nether portal.", _modID);
+					Debug.LogFormat("[Minecraft Survival #{0}] Strike! You don't have a {1}.", _modID, GetResourceName(8));
+					Debug.LogFormat("[Minecraft Survival #{0}] Once you do get one, you should get some Obsidian for a Nether portal.", _modID);
 					break;
 				}
 				rnd = rand.Range(2, 4);
 				if (_materialValues[25] >= 64 || _materialValues[25] + rnd >= 64) { _materialValues[25] = 64; UpdateText(25); break; }
-				_materialValues[25] += rnd;
+                rnd2 = rand.Range(0, 4);
+                if (rnd2 == 0)
+                    bAudio.PlaySoundAtTransform("stone1", transform);
+                else if (rnd2 == 1)
+                    bAudio.PlaySoundAtTransform("stone2", transform);
+                else if (rnd2 == 2)
+                    bAudio.PlaySoundAtTransform("stone3", transform);
+                else if (rnd2 == 3)
+                    bAudio.PlaySoundAtTransform("stone4", transform);
+                _materialValues[25] += rnd;
 				UpdateText(25);
 				current = 25;
 				diff = rnd;
@@ -448,13 +569,22 @@ public class MinecraftSurvival : MonoBehaviour
 				if (!(_materialValues[5] >= 1 || _materialValues[6] >= 1 || _materialValues[7] >= 1 || _materialValues[8] >= 1))
 				{
 					GetComponent<KMBombModule>().HandleStrike();
-					Debug.LogFormat("[Minecraft Survival #{0}]: Strike! You don't have a {1}.", _modID, GetResourceType(5));
-					Debug.LogFormat("[Minecraft Survival #{0}]: Good job making it to The End without any resources.", _modID);
+					Debug.LogFormat("[Minecraft Survival #{0}] Strike! You don't have a {1}.", _modID, GetResourceType(5));
+					Debug.LogFormat("[Minecraft Survival #{0}] Good job making it to The End without any resources.", _modID);
 					break;
 				}
 				rnd = rand.Range(3, 5);
 				if (_materialValues[30] >= 64 || _materialValues[30] + rnd >= 64) { _materialValues[30] = 64; UpdateText(30); break; }
-				_materialValues[30] += rnd;
+                rnd2 = rand.Range(0, 4);
+                if (rnd2 == 0)
+                    bAudio.PlaySoundAtTransform("stone1", transform);
+                else if (rnd2 == 1)
+                    bAudio.PlaySoundAtTransform("stone2", transform);
+                else if (rnd2 == 2)
+                    bAudio.PlaySoundAtTransform("stone3", transform);
+                else if (rnd2 == 3)
+                    bAudio.PlaySoundAtTransform("stone4", transform);
+                _materialValues[30] += rnd;
 				UpdateText(30);
 				current = 30;
 				diff = rnd;
@@ -463,18 +593,27 @@ public class MinecraftSurvival : MonoBehaviour
 				if (!(_materialValues[10] >= 1))
 				{
 					GetComponent<KMBombModule>().HandleStrike();
-					Debug.LogFormat("[Minecraft Survival #{0}]: Strike! You don't have a {1}.", _modID, GetResourceType(10));
-					Debug.LogFormat("[Minecraft Survival #{0}]: You should get one.");
+					Debug.LogFormat("[Minecraft Survival #{0}] Strike! You don't have a {1}.", _modID, GetResourceType(10));
+					Debug.LogFormat("[Minecraft Survival #{0}] You should get one.");
 					break;
 				}
 				if (_materialValues[31] >= 64 || _materialValues[31] + 2 >= 64) { _materialValues[31] = 64; UpdateText(31); break; }
-				_materialValues[31] += 2;
+                rnd2 = rand.Range(0, 4);
+                if (rnd2 == 0)
+                    bAudio.PlaySoundAtTransform("wood1", transform);
+                else if (rnd2 == 1)
+                    bAudio.PlaySoundAtTransform("wood2", transform);
+                else if (rnd2 == 2)
+                    bAudio.PlaySoundAtTransform("wood3", transform);
+                else if (rnd2 == 3)
+                    bAudio.PlaySoundAtTransform("wood4", transform);
+                _materialValues[31] += 2;
 				UpdateText(31);
 				current = 31;
 				diff = 2;
 				break;
 			default:
-				Debug.LogFormat("[Minecraft Survival #{0}]: Unable to update resources.", _modID);
+				Debug.LogFormat("[Minecraft Survival #{0}] Unable to update resources.", _modID);
 				break;
 		}
 		if (current != 0)
@@ -482,7 +621,7 @@ public class MinecraftSurvival : MonoBehaviour
 			string name = GetResourceName(current);
 			if (current == 22 && diff == 1)
 				name = "Diamond";
-			Debug.LogFormat("[Minecraft Survival #{0}]: Gathered {1} {2}.", _modID, diff, name);
+			Debug.LogFormat("[Minecraft Survival #{0}] Gathered {1} {2}.", _modID, diff, name);
 		}
 		_resourceUntilFight--;
 		if (_resourceUntilFight == 0)
@@ -510,7 +649,7 @@ public class MinecraftSurvival : MonoBehaviour
 			resourceNames[count - 1] = "or " + resourceNames.Last();
 		string stuff = count != 2 ? string.Join(", ", resourceNames.ToArray()) : (resourceNames[0] + " or " + resourceNames[1]);
 		string result = (plural ? "" : item.EqualsAny(7, 13, 18) ? "an " : "a ") + GetResourceName(item);
-		Debug.LogFormat("[Minecraft Survival #{0}]: Strike! You don't have the correct item or items [{1}] to craft {2}", _modID, stuff, result);
+		Debug.LogFormat("[Minecraft Survival #{0}] Strike! You don't have the correct item or items [{1}] to craft {2}", _modID, stuff, result);
 	}
 	void InventoryButton(KMSelectable but)
 	{
@@ -805,14 +944,14 @@ public class MinecraftSurvival : MonoBehaviour
 				if (_materialValues[41] >= 1 && _dragonDefeated)
 				{
 					SolveModule();
-					Debug.LogFormat("[Minecraft Survival #{0}]: Module solved. Have a good time in your world from now on.", _modID);
+					Debug.LogFormat("[Minecraft Survival #{0}] Module solved. Have a good time in your world from now on.", _modID);
 					GetComponent<KMBombModule>().HandlePass();
 					return;
 				}
 				else
 				{
 					GetComponent<KMBombModule>().HandleStrike();
-					Debug.LogFormat("[Minecraft Survival #{0}]: Strike! You have not obtained that item yet!", _modID);
+					Debug.LogFormat("[Minecraft Survival #{0}] Strike! You have not obtained that item yet!", _modID);
 					break;
 				}
 			case 43:
@@ -831,7 +970,7 @@ public class MinecraftSurvival : MonoBehaviour
 					break;
 				}
 			default:
-				Debug.LogFormat("[Minecraft Survival #{0}]: Unable to find the index of the item.", _modID);
+				Debug.LogFormat("[Minecraft Survival #{0}] Unable to find the index of the item.", _modID);
 				return;
 		}
 		if (current != _materialValues[index])
@@ -853,7 +992,7 @@ public class MinecraftSurvival : MonoBehaviour
 			}
 			else
 				count = " " + difference;
-			Debug.LogFormat("[Minecraft Survival #{0}]: Crafted{1} {2}.", _modID, count, name);
+			Debug.LogFormat("[Minecraft Survival #{0}] Crafted{1} {2}.", _modID, count, name);
 		}
 		UpdateText(index);
 	}
@@ -897,7 +1036,7 @@ public class MinecraftSurvival : MonoBehaviour
 	{
 		if ((_materialValues[11] == 0 || _materialValues[12] == 0 || _materialValues[13] == 0 || _materialValues[14] == 0) && !(_materialValues[11] >= 1 || _materialValues[12] >= 1 || _materialValues[13] >= 1 || _materialValues[14] >= 1))
 		{
-			Debug.LogFormat("[Minecraft Survival #{0}]: Fight did not start because you have no sword!", _modID);
+			Debug.LogFormat("[Minecraft Survival #{0}] Fight did not start because you have no sword!", _modID);
 			_resourceUntilFight = rand.Range(2, 7);
 			return;
 		}
@@ -957,7 +1096,7 @@ public class MinecraftSurvival : MonoBehaviour
 			_gMonsterHealth = _monsterHealth[10];
 			_mobHealthIndicator.text = _gMonsterHealth.ToString();
 			StartCoroutine(UpHearts());
-			Debug.LogFormat("[Minecraft Survival #{0}]: The monster you are fighting is {1} and it has {2} health and {3} damage.", _modID, _monsterIndex[_gMonsterIndex], _monsterHealth[_gMonsterIndex], _monsterDamage[_gMonsterIndex]);
+			Debug.LogFormat("[Minecraft Survival #{0}] The monster you are fighting is {1} and it has {2} health and {3} damage.", _modID, _monsterIndex[_gMonsterIndex], _monsterHealth[_gMonsterIndex], _monsterDamage[_gMonsterIndex]);
 			return;
 		}
 		string mob = "";
@@ -977,57 +1116,141 @@ public class MinecraftSurvival : MonoBehaviour
 				mob = mobs[rand.Range(0, mobs.Length)];
 				break;
 			default:
-				Debug.LogFormat("[Minecraft Survival #{0}]: Unable to create a monster fight.");
+				Debug.LogFormat("[Minecraft Survival #{0}] Unable to create a monster fight.");
 				break;
 		}
 		switch (mob)
 		{
 			case "Zombie":
-				_mobIndicator.material = _mobMaterials[0];
+                int rnd = rand.Range(0, 3);
+                if (rnd == 0)
+                    bAudio.PlaySoundAtTransform("zombie1", transform);
+                else if (rnd == 1)
+                    bAudio.PlaySoundAtTransform("zombie2", transform);
+                else if (rnd == 2)
+                    bAudio.PlaySoundAtTransform("zombie3", transform);
+                _mobIndicator.material = _mobMaterials[0];
 				_gMonsterIndex = 0;
 				break;
 			case "Skeleton":
-				_mobIndicator.material = _mobMaterials[1];
+                rnd = rand.Range(0, 3);
+                if (rnd == 0)
+                    bAudio.PlaySoundAtTransform("skeleton1", transform);
+                else if (rnd == 1)
+                    bAudio.PlaySoundAtTransform("skeleton2", transform);
+                else if (rnd == 2)
+                    bAudio.PlaySoundAtTransform("skeleton3", transform);
+                _mobIndicator.material = _mobMaterials[1];
 				_gMonsterIndex = 1;
 				break;
 			case "Spider":
-				_mobIndicator.material = _mobMaterials[2];
+                rnd = rand.Range(0, 4);
+                if (rnd == 0)
+                    bAudio.PlaySoundAtTransform("spider1", transform);
+                else if (rnd == 1)
+                    bAudio.PlaySoundAtTransform("spider2", transform);
+                else if (rnd == 2)
+                    bAudio.PlaySoundAtTransform("spider3", transform);
+                else if (rnd == 3)
+                    bAudio.PlaySoundAtTransform("spider4", transform);
+                _mobIndicator.material = _mobMaterials[2];
 				_gMonsterIndex = 2;
 				break;
 			case "Creeper":
-				_mobIndicator.material = _mobMaterials[3];
+                bAudio.PlaySoundAtTransform("creeper", transform);
+                _mobIndicator.material = _mobMaterials[3];
 				_gMonsterIndex = 3;
 				break;
 			case "Slime":
-				_mobIndicator.material = _mobMaterials[4];
+                rnd = rand.Range(0, 4);
+                if (rnd == 0)
+                    bAudio.PlaySoundAtTransform("slime1", transform);
+                else if (rnd == 1)
+                    bAudio.PlaySoundAtTransform("slime2", transform);
+                else if (rnd == 2)
+                    bAudio.PlaySoundAtTransform("slime3", transform);
+                else if (rnd == 3)
+                    bAudio.PlaySoundAtTransform("slime4", transform);
+                _mobIndicator.material = _mobMaterials[4];
 				_gMonsterIndex = 4;
 				break;
 			case "Pigman":
-				_mobIndicator.material = _mobMaterials[0];
+                rnd = rand.Range(0, 4);
+                if (rnd == 0)
+                    bAudio.PlaySoundAtTransform("zpig1", transform);
+                else if (rnd == 1)
+                    bAudio.PlaySoundAtTransform("zpig2", transform);
+                else if (rnd == 2)
+                    bAudio.PlaySoundAtTransform("zpig3", transform);
+                else if (rnd == 3)
+                    bAudio.PlaySoundAtTransform("zpig4", transform);
+                _mobIndicator.material = _mobMaterials[0];
 				_gMonsterIndex = 5;
 				break;
 			case "Blaze":
-				_mobIndicator.material = _mobMaterials[5];
+                rnd = rand.Range(0, 4);
+                if (rnd == 0)
+                    bAudio.PlaySoundAtTransform("blaze1", transform);
+                else if (rnd == 1)
+                    bAudio.PlaySoundAtTransform("blaze2", transform);
+                else if (rnd == 2)
+                    bAudio.PlaySoundAtTransform("blaze3", transform);
+                else if (rnd == 3)
+                    bAudio.PlaySoundAtTransform("blaze4", transform);
+                _mobIndicator.material = _mobMaterials[5];
 				_gMonsterIndex = 6;
 				break;
 			case "Wither Skeleton":
-				_mobIndicator.material = _mobMaterials[6];
+                rnd = rand.Range(0, 3);
+                if (rnd == 0)
+                    bAudio.PlaySoundAtTransform("wskel1", transform);
+                else if (rnd == 1)
+                    bAudio.PlaySoundAtTransform("wskel2", transform);
+                else if (rnd == 2)
+                    bAudio.PlaySoundAtTransform("wskel3", transform);
+                _mobIndicator.material = _mobMaterials[6];
 				_gMonsterIndex = 7;
 				break;
 			case "Enderman":
-				_mobIndicator.material = _mobMaterials[7];
+                rnd = rand.Range(0, 5);
+                if (rnd == 0)
+                    bAudio.PlaySoundAtTransform("enderman1", transform);
+                else if (rnd == 1)
+                    bAudio.PlaySoundAtTransform("enderman2", transform);
+                else if (rnd == 2)
+                    bAudio.PlaySoundAtTransform("enderman3", transform);
+                else if (rnd == 3)
+                    bAudio.PlaySoundAtTransform("enderman4", transform);
+                else if (rnd == 4)
+                    bAudio.PlaySoundAtTransform("enderman5", transform);
+                _mobIndicator.material = _mobMaterials[7];
 				_gMonsterIndex = 8;
 				break;
 			case "Shulker":
-				_mobIndicator.material = _mobMaterials[8];
+                rnd = rand.Range(0, 7);
+                if (rnd == 0)
+                    bAudio.PlaySoundAtTransform("shulker1", transform);
+                else if (rnd == 1)
+                    bAudio.PlaySoundAtTransform("shulker2", transform);
+                else if (rnd == 2)
+                    bAudio.PlaySoundAtTransform("shulker3", transform);
+                else if (rnd == 3)
+                    bAudio.PlaySoundAtTransform("shulker4", transform);
+                else if (rnd == 4)
+                    bAudio.PlaySoundAtTransform("shulker5", transform);
+                else if (rnd == 5)
+                    bAudio.PlaySoundAtTransform("shulker6", transform);
+                else if (rnd == 6)
+                    bAudio.PlaySoundAtTransform("shulker7", transform);
+                _mobIndicator.material = _mobMaterials[8];
 				_gMonsterIndex = 9;
 				break;
 			default:
-				Debug.LogFormat("[Minecraft Survival #{0}]: Unable to find monster informaton.");
+				Debug.LogFormat("[Minecraft Survival #{0}] Unable to find monster informaton.");
 				break;
 		}
 		_mobIndicator.enabled = true;
-		Debug.LogFormat("[Minecraft Survival #{0}]: The monster you are fighting is {1} and it has {2} health and {3} damage.", _modID, _monsterIndex[_gMonsterIndex], _monsterHealth[_gMonsterIndex], _monsterDamage[_gMonsterIndex]);
+		Debug.LogFormat("[Minecraft Survival #{0}] The monster you are fighting is {1} and it has {2} health and {3} damage.", _modID, _monsterIndex[_gMonsterIndex], _monsterHealth[_gMonsterIndex], _monsterDamage[_gMonsterIndex]);
 
 		foreach (KMSelectable km in _resourceButtons)
 		{
@@ -1121,12 +1344,13 @@ public class MinecraftSurvival : MonoBehaviour
 			}
 		}
 		_gMonsterHealth -= _playerDamage;
-		Debug.LogFormat("[Minecraft Survival #{0}]: You attacked the {1} for {2} damage and now has {3} health remaining.", _modID, _gMonsterName, _playerDamage, _gMonsterHealth < 0 ? 0 : _gMonsterHealth);
+        Debug.LogFormat("[Minecraft Survival #{0}] You attacked the {1} for {2} damage and now has {3} health remaining.", _modID, _gMonsterName, _playerDamage, _gMonsterHealth < 0 ? 0 : _gMonsterHealth);
 		_mobHealthIndicator.text = _gMonsterHealth < 0 ? 0.ToString() : _gMonsterHealth.ToString();
 		if (_dragonFightStarted && _gMonsterHealth <= 0)
 		{
-			Debug.LogFormat("[Minecraft Survival #{0}]: Dragon defeated. Go click on the egg!", _modID);
-			_dragonDefeated = true;
+			Debug.LogFormat("[Minecraft Survival #{0}] Dragon defeated. Go click on the egg!", _modID);
+            bAudio.PlaySoundAtTransform("end", transform);
+            _dragonDefeated = true;
 			_dragonFightStarted = false;
 			_mobIndicator.enabled = false;
 			_mobHealthIndicator.text = "";
@@ -1143,10 +1367,12 @@ public class MinecraftSurvival : MonoBehaviour
 			_mobHealthIndicator.text = "";
 			UpdateModule();
 			int drop = GiveMobDrop();
-			Debug.LogFormat("[Minecraft Survival #{0}]: The monster has been defeated. It dropped {1}. Resume gathering! Number of resources gathered till next fight: {2}.", _modID, drop > 1 ? drop + " items" : "an item", _resourceUntilFight);
+			Debug.LogFormat("[Minecraft Survival #{0}] The monster has been defeated. It dropped {1}. Resume gathering! Number of resources gathered till next fight: {2}.", _modID, drop > 1 ? drop + " items" : "an item", _resourceUntilFight);
 			return;
 		}
-		int monsterChance = !(_gMonsterName.Equals("Ender Dragon")) ? rand.Range(1, 5) : rand.Range(1, 26);
+        PlayHurtSound();
+        int rnd = -1;
+        int monsterChance = !(_gMonsterName.Equals("Ender Dragon")) ? rand.Range(1, 5) : rand.Range(1, 26);
 		if (monsterChance == 1 && _gMonsterName.Equals("Ender Dragon"))
 		{
 			_playerHealth -= (_gMonsterDamage - _playerProc) < 0 ? 0 : (_gMonsterDamage - _playerProc);
@@ -1158,11 +1384,18 @@ public class MinecraftSurvival : MonoBehaviour
 				_mobIndicator.enabled = false;
 				_mobHealthIndicator.text = "";
 				UpdateModule();
-				Debug.LogFormat("[Minecraft Survival #{0}]: You died by a {1}. Strike!", _modID, _gMonsterName);
+				Debug.LogFormat("[Minecraft Survival #{0}] You died by a {1}. Strike!", _modID, _gMonsterName);
 				GetComponent<KMBombModule>().HandleStrike();
 				return;
 			}
-			Debug.LogFormat("[Minecraft Survival #{0}]: You have been attacked by the {1} for {2} damage and now have {3} health remaining.", _modID, _gMonsterName, (_gMonsterDamage - _playerProc), _playerHealth < 0 ? 0 : _playerHealth);
+            rnd = rand.Range(0, 3);
+            if (rnd == 0)
+                bAudio.PlaySoundAtTransform("hit1", transform);
+            else if (rnd == 1)
+                bAudio.PlaySoundAtTransform("hit2", transform);
+            else if (rnd == 2)
+                bAudio.PlaySoundAtTransform("hit3", transform);
+            Debug.LogFormat("[Minecraft Survival #{0}] You have been attacked by the {1} for {2} damage and now have {3} health remaining.", _modID, _gMonsterName, (_gMonsterDamage - _playerProc), _playerHealth < 0 ? 0 : _playerHealth);
 			UpdateHearts();
 			return;
 		}
@@ -1177,11 +1410,18 @@ public class MinecraftSurvival : MonoBehaviour
 				_mobIndicator.enabled = false;
 				_mobHealthIndicator.text = "";
 				UpdateModule();
-				Debug.LogFormat("[Minecraft Survival #{0}]: You died by a {1}. Strike!", _modID, _gMonsterName);
+				Debug.LogFormat("[Minecraft Survival #{0}] You died by a {1}. Strike!", _modID, _gMonsterName);
 				GetComponent<KMBombModule>().HandleStrike();
 				return;
 			}
-			Debug.LogFormat("[Minecraft Survival #{0}]: You have been attacked by the {1} for {2} damage and now have {3} health remaining.", _modID, _gMonsterName, (_gMonsterDamage - _playerProc), _playerHealth < 0 ? 0 : _playerHealth);
+            rnd = rand.Range(0, 3);
+            if (rnd == 0)
+                bAudio.PlaySoundAtTransform("hit1", transform);
+            else if (rnd == 1)
+                bAudio.PlaySoundAtTransform("hit2", transform);
+            else if (rnd == 2)
+                bAudio.PlaySoundAtTransform("hit3", transform);
+            Debug.LogFormat("[Minecraft Survival #{0}] You have been attacked by the {1} for {2} damage and now have {3} health remaining.", _modID, _gMonsterName, (_gMonsterDamage - _playerProc), _playerHealth < 0 ? 0 : _playerHealth);
 			UpdateHearts();
 			return;
 		}
@@ -1196,11 +1436,18 @@ public class MinecraftSurvival : MonoBehaviour
 				_mobIndicator.enabled = false;
 				_mobHealthIndicator.text = "";
 				UpdateModule();
-				Debug.LogFormat("[Minecraft Survival #{0}]: A Creeper blew you up. You died, aw man. Strike!", _modID);
+				Debug.LogFormat("[Minecraft Survival #{0}] A Creeper blew you up. You died, aw man. Strike!", _modID);
 				GetComponent<KMBombModule>().HandleStrike();
 				return;
 			}
-			Debug.LogFormat("[Minecraft Survival #{0}]: You have been attacked by the {1} for {2} damage and now have {3} health remaining.", _modID, _gMonsterName, (_gMonsterDamage - _playerProc), _playerHealth);
+            rnd = rand.Range(0, 3);
+            if (rnd == 0)
+                bAudio.PlaySoundAtTransform("hit1", transform);
+            else if (rnd == 1)
+                bAudio.PlaySoundAtTransform("hit2", transform);
+            else if (rnd == 2)
+                bAudio.PlaySoundAtTransform("hit3", transform);
+            Debug.LogFormat("[Minecraft Survival #{0}] You have been attacked by the {1} for {2} damage and now have {3} health remaining.", _modID, _gMonsterName, (_gMonsterDamage - _playerProc), _playerHealth);
 			UpdateHearts();
 			return;
 		}
@@ -1208,12 +1455,20 @@ public class MinecraftSurvival : MonoBehaviour
 
 	void EatEventHandler()
 	{
+        int rnd = -1;
 		if (_fightStarted || _dragonFightStarted)
 		{
 			if (_playerHealth == 20) { return; }
 			if (_materialValues[4] >= 1)
 			{
-				_materialValues[4]--;
+                rnd = rand.Range(0, 3);
+                if (rnd == 0)
+                    bAudio.PlaySoundAtTransform("eat1", transform);
+                else if (rnd == 1)
+                    bAudio.PlaySoundAtTransform("eat2", transform);
+                else if (rnd == 2)
+                    bAudio.PlaySoundAtTransform("eat3", transform);
+                _materialValues[4]--;
 				_playerHealth = (_playerHealth + 7) > 20 ? 20 : (_playerHealth + 7);
 				UpdateHearts();
 			}
@@ -1223,7 +1478,14 @@ public class MinecraftSurvival : MonoBehaviour
 			if (_playerHunger == 10) { return; }
 			if (_materialValues[4] >= 1)
 			{
-				_materialValues[4]--;
+                rnd = rand.Range(0, 3);
+                if (rnd == 0)
+                    bAudio.PlaySoundAtTransform("eat1", transform);
+                else if (rnd == 1)
+                    bAudio.PlaySoundAtTransform("eat2", transform);
+                else if (rnd == 2)
+                    bAudio.PlaySoundAtTransform("eat3", transform);
+                _materialValues[4]--;
 				_playerHunger = (_playerHunger + 4) > 10 ? 10 : (_playerHunger + 4);
 				UpdateHunger();
 			}
@@ -1233,7 +1495,16 @@ public class MinecraftSurvival : MonoBehaviour
 	void StartTheDamnDragonFightAlready()
 	{
 		_dragonFightStarted = true;
-		StartFightEventHandler();
+        int rnd = rand.Range(0, 4);
+        if (rnd == 0)
+            bAudio.PlaySoundAtTransform("growl1", transform);
+        else if (rnd == 1)
+            bAudio.PlaySoundAtTransform("growl2", transform);
+        else if (rnd == 2)
+            bAudio.PlaySoundAtTransform("growl3", transform);
+        else if (rnd == 3)
+            bAudio.PlaySoundAtTransform("growl4", transform);
+        StartFightEventHandler();
 	}
 
 	void UpdateHearts()
@@ -1421,7 +1692,7 @@ public class MinecraftSurvival : MonoBehaviour
 				}
 				break;
 			default:
-				Debug.LogFormat("[Minecraft Survival #{0}]: Unable to update player health indicator.", _modID);
+				Debug.LogFormat("[Minecraft Survival #{0}] Unable to update player health indicator.", _modID);
 				break;
 		}
 	}
@@ -1528,7 +1799,7 @@ public class MinecraftSurvival : MonoBehaviour
 				}
 				break;
 			default:
-				Debug.LogFormat("[Minecraft Survival #{0}]: Unable to update hunger bar.", _modID);
+				Debug.LogFormat("[Minecraft Survival #{0}] Unable to update hunger bar.", _modID);
 				break;
 		}
 	}
@@ -1596,7 +1867,7 @@ public class MinecraftSurvival : MonoBehaviour
 				_moduleMeshes[1].material = _dimensionMaterials[5];
 				break;
 			default:
-				Debug.LogFormat("[Minecraft Survival #{0}]: Unable to update module.", _modID);
+				Debug.LogFormat("[Minecraft Survival #{0}] Unable to update module.", _modID);
 				break;
 		}
 		for (int g = 0; g <= 9; g++)
@@ -1608,66 +1879,216 @@ public class MinecraftSurvival : MonoBehaviour
 		UpdateHunger();
 	}
 
+    void PlayHurtSound()
+    {
+        switch (_gMonsterName)
+        {
+            case "Zombie":
+                int rnd = rand.Range(0, 2);
+                if (rnd == 0)
+                    bAudio.PlaySoundAtTransform("zombiehurt1", transform);
+                else if (rnd == 1)
+                    bAudio.PlaySoundAtTransform("zombiehurt2", transform);
+                break;
+            case "Skeleton":
+                rnd = rand.Range(0, 4);
+                if (rnd == 0)
+                    bAudio.PlaySoundAtTransform("skeletonhurt1", transform);
+                else if (rnd == 1)
+                    bAudio.PlaySoundAtTransform("skeletonhurt2", transform);
+                else if (rnd == 2)
+                    bAudio.PlaySoundAtTransform("skeletonhurt3", transform);
+                else if (rnd == 3)
+                    bAudio.PlaySoundAtTransform("skeletonhurt4", transform);
+                break;
+            case "Spider":
+                rnd = rand.Range(0, 4);
+                if (rnd == 0)
+                    bAudio.PlaySoundAtTransform("spider1", transform);
+                else if (rnd == 1)
+                    bAudio.PlaySoundAtTransform("spider2", transform);
+                else if (rnd == 2)
+                    bAudio.PlaySoundAtTransform("spider3", transform);
+                else if (rnd == 3)
+                    bAudio.PlaySoundAtTransform("spider4", transform);
+                break;
+            case "Creeper":
+                rnd = rand.Range(0, 4);
+                if (rnd == 0)
+                    bAudio.PlaySoundAtTransform("creeperhurt1", transform);
+                else if (rnd == 1)
+                    bAudio.PlaySoundAtTransform("creeperhurt2", transform);
+                else if (rnd == 2)
+                    bAudio.PlaySoundAtTransform("creeperhurt3", transform);
+                else if (rnd == 3)
+                    bAudio.PlaySoundAtTransform("creeperhurt4", transform);
+                break;
+            case "Slime":
+                rnd = rand.Range(0, 4);
+                if (rnd == 0)
+                    bAudio.PlaySoundAtTransform("slime1", transform);
+                else if (rnd == 1)
+                    bAudio.PlaySoundAtTransform("slime2", transform);
+                else if (rnd == 2)
+                    bAudio.PlaySoundAtTransform("slime3", transform);
+                else if (rnd == 3)
+                    bAudio.PlaySoundAtTransform("slime4", transform);
+                break;
+            case "Pigman":
+                rnd = rand.Range(0, 2);
+                if (rnd == 0)
+                    bAudio.PlaySoundAtTransform("zpighurt1", transform);
+                else if (rnd == 1)
+                    bAudio.PlaySoundAtTransform("zpighurt2", transform);
+                break;
+            case "Blaze":
+                rnd = rand.Range(0, 4);
+                if (rnd == 0)
+                    bAudio.PlaySoundAtTransform("blazehurt1", transform);
+                else if (rnd == 1)
+                    bAudio.PlaySoundAtTransform("blazehurt2", transform);
+                else if (rnd == 2)
+                    bAudio.PlaySoundAtTransform("blazehurt3", transform);
+                else if (rnd == 3)
+                    bAudio.PlaySoundAtTransform("blazehurt4", transform);
+                break;
+            case "Wither Skeleton":
+                rnd = rand.Range(0, 4);
+                if (rnd == 0)
+                    bAudio.PlaySoundAtTransform("wskelhurt1", transform);
+                else if (rnd == 1)
+                    bAudio.PlaySoundAtTransform("wskelhurt2", transform);
+                else if (rnd == 2)
+                    bAudio.PlaySoundAtTransform("wskelhurt3", transform);
+                else if (rnd == 3)
+                    bAudio.PlaySoundAtTransform("wskelhurt4", transform);
+                break;
+            case "Enderman":
+                rnd = rand.Range(0, 4);
+                if (rnd == 0)
+                    bAudio.PlaySoundAtTransform("endermanhurt1", transform);
+                else if (rnd == 1)
+                    bAudio.PlaySoundAtTransform("endermanhurt2", transform);
+                else if (rnd == 2)
+                    bAudio.PlaySoundAtTransform("endermanhurt3", transform);
+                else if (rnd == 3)
+                    bAudio.PlaySoundAtTransform("endermanhurt4", transform);
+                break;
+            case "Ender Dragon":
+                rnd = rand.Range(0, 4);
+                if (rnd == 0)
+                    bAudio.PlaySoundAtTransform("enderdragonhurt1", transform);
+                else if (rnd == 1)
+                    bAudio.PlaySoundAtTransform("enderdragonhurt2", transform);
+                else if (rnd == 2)
+                    bAudio.PlaySoundAtTransform("enderdragonhurt3", transform);
+                else if (rnd == 3)
+                    bAudio.PlaySoundAtTransform("enderdragonhurt4", transform);
+                break;
+            case "Shulker":
+                rnd = rand.Range(0, 4);
+                if (rnd == 0)
+                    bAudio.PlaySoundAtTransform("shulkerhurt1", transform);
+                else if (rnd == 1)
+                    bAudio.PlaySoundAtTransform("shulkerhurt2", transform);
+                else if (rnd == 2)
+                    bAudio.PlaySoundAtTransform("shulkerhurt3", transform);
+                else if (rnd == 3)
+                    bAudio.PlaySoundAtTransform("shulkerhurt4", transform);
+                break;
+        }
+    }
+
 	int GiveMobDrop()
 	{
 		int num = 0;
 		switch (_gMonsterName)
 		{
 			case "Zombie":
-				if (_materialValues[35] >= 64 || _materialValues[35] + 1 >= 64) { _materialValues[35] = 64; break; }
-				_materialValues[35]++;
+                bAudio.PlaySoundAtTransform("zombiedeath", transform);
+                if (_materialValues[35] >= 64 || _materialValues[35] + 1 >= 64) { _materialValues[35] = 64; break; }
+                _materialValues[35]++;
 				num = 1;
 				break;
 			case "Skeleton":
-				int rnd = rand.Range(2, 4);
+                bAudio.PlaySoundAtTransform("skeletondeath", transform);
+                int rnd = rand.Range(2, 4);
 				if (_materialValues[36] >= 64 || _materialValues[36] + rnd >= 64) { _materialValues[36] = 64; break; }
 				_materialValues[36] += rnd;
 				num = rnd;
 				break;
 			case "Spider":
-				if (_materialValues[37] >= 64 || _materialValues[37] + 2 >= 64) { _materialValues[37] = 64; break; }
+                bAudio.PlaySoundAtTransform("spiderdeath", transform);
+                if (_materialValues[37] >= 64 || _materialValues[37] + 2 >= 64) { _materialValues[37] = 64; break; }
 				_materialValues[37] += 2;
 				num = 2;
 				break;
 			case "Creeper":
-				if (_materialValues[38] >= 64 || _materialValues[38] + 1 >= 64) { _materialValues[38] = 64; break; }
+                bAudio.PlaySoundAtTransform("creeperdeath", transform);
+                if (_materialValues[38] >= 64 || _materialValues[38] + 1 >= 64) { _materialValues[38] = 64; break; }
 				_materialValues[38]++;
 				num = 1;
 				break;
 			case "Slime":
-				rnd = rand.Range(2, 4);
+                int rnd2 = rand.Range(0, 4);
+                if (rnd2 == 0)
+                    bAudio.PlaySoundAtTransform("slime1", transform);
+                else if (rnd2 == 1)
+                    bAudio.PlaySoundAtTransform("slime2", transform);
+                else if (rnd2 == 2)
+                    bAudio.PlaySoundAtTransform("slime3", transform);
+                else if (rnd2 == 3)
+                    bAudio.PlaySoundAtTransform("slime4", transform);
+                rnd = rand.Range(2, 4);
 				if (_materialValues[39] >= 64 || _materialValues[39] + rnd >= 64) { _materialValues[39] = 64; break; }
 				_materialValues[39] += rnd;
 				num = rnd;
 				break;
 			case "Pigman":
-				if (_materialValues[35] >= 64 || _materialValues[35] + 2 >= 64) { _materialValues[35] = 64; break; }
+                bAudio.PlaySoundAtTransform("zpigdeath", transform);
+                if (_materialValues[35] >= 64 || _materialValues[35] + 2 >= 64) { _materialValues[35] = 64; break; }
 				_materialValues[35] += 2;
 				num = 2;
 				break;
 			case "Blaze":
-				if (_materialValues[32] >= 64 || _materialValues[32] + 2 >= 64) { _materialValues[32] = 64; break; }
+                bAudio.PlaySoundAtTransform("blazedeath", transform);
+                if (_materialValues[32] >= 64 || _materialValues[32] + 2 >= 64) { _materialValues[32] = 64; break; }
 				_materialValues[32] += 2;
 				num = 2;
 				break;
 			case "Wither Skeleton":
-				rnd = rand.Range(2, 5);
+                rnd2 = rand.Range(0, 2);
+                if (rnd2 == 0)
+                    bAudio.PlaySoundAtTransform("wskeldeath1", transform);
+                else if (rnd2 == 1)
+                    bAudio.PlaySoundAtTransform("wskeldeath2", transform);
+                rnd = rand.Range(2, 5);
 				if (_materialValues[20] >= 64 || _materialValues[20] + rnd >= 64) { _materialValues[20] = 64; break; }
 				_materialValues[20] += rnd;
 				num = rnd;
 				break;
 			case "Enderman":
-				if (_materialValues[33] >= 64 || _materialValues[33] + 2 >= 64) { _materialValues[33] = 64; break; }
+                bAudio.PlaySoundAtTransform("endermandeath", transform);
+                if (_materialValues[33] >= 64 || _materialValues[33] + 2 >= 64) { _materialValues[33] = 64; break; }
 				_materialValues[33] += 2;
 				num = 2;
 				break;
 			case "Shulker":
-				if (_materialValues[40] >= 64 || _materialValues[40] + 1 >= 64) { _materialValues[40] = 64; break; }
+                rnd2 = rand.Range(0, 4);
+                if (rnd2 == 0)
+                    bAudio.PlaySoundAtTransform("shulkerdeath1", transform);
+                else if (rnd2 == 1)
+                    bAudio.PlaySoundAtTransform("shulkerdeath2", transform);
+                else if (rnd2 == 2)
+                    bAudio.PlaySoundAtTransform("shulkerdeath3", transform);
+                else if (rnd2 == 3)
+                    bAudio.PlaySoundAtTransform("shulkerdeath4", transform);
+                if (_materialValues[40] >= 64 || _materialValues[40] + 1 >= 64) { _materialValues[40] = 64; break; }
 				_materialValues[40]++;
 				num = 1;
 				break;
 			default:
-				Debug.LogFormat("[Minecraft Survival #{0}]: Unable to find monster informaton.", _modID);
+				Debug.LogFormat("[Minecraft Survival #{0}] Unable to find monster informaton.", _modID);
 				break;
 		}
 		return num;
@@ -1708,6 +2129,7 @@ public class MinecraftSurvival : MonoBehaviour
 	IEnumerator OpenInventory()
 	{
 		_isAnimating = true;
+        bAudio.PlaySoundAtTransform("chestopen", transform);
 		_moduleMeshes[0].material = _dimensionMaterials[6];
 		_moduleMeshes[1].material = _dimensionMaterials[7];
 		_materialValueText.text = "";
@@ -1749,7 +2171,8 @@ public class MinecraftSurvival : MonoBehaviour
 		_allResourceInventoryIndicies.CopyTo(kma, 0);
 		_materialValueText.text = "";
 		_isAnimating = true;
-		_actionButtons[5].GetComponent<Renderer>().enabled = false;
+        bAudio.PlaySoundAtTransform("chestclosed", transform);
+        _actionButtons[5].GetComponent<Renderer>().enabled = false;
 		_actionButtons[5].Highlight.gameObject.SetActive(false);
 		foreach (KMSelectable inv in kma.Reverse())
 		{
@@ -1829,4 +2252,624 @@ public class MinecraftSurvival : MonoBehaviour
 		_playerHunger = 10;
 		yield break;
 	}
+
+    //twitch plays
+    #pragma warning disable 414
+    private readonly string TwitchHelpMessage = @"!{0} inventory/inv [Toggles being in and out of the inventory] | !{0} amount/amt <item> [See the amount of the specified item in the inventory] | !{0} craft (#) <item> [Crafts the specified item in the inventory (optionally '#' times)] | !{0} dimension/dim <dimension> [Changes to the specified dimension] | !{0} gather (#) <item> [Gathers the specified item (optionally '#' times)] | !{0} eat [Eats a cooked beef] | !{0} attack [Attacks a mob in a fight] | !{0} dragon [Enter the Ender Dragon battle] | !{0} egg [Clicks the dragon egg in the inventory]";
+    #pragma warning restore 414
+    IEnumerator ProcessTwitchCommand(string command)
+    {
+        if (Regex.IsMatch(command, @"^\s*egg\s*$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant))
+        {
+            yield return null;
+            if (_fightStarted)
+            {
+                yield return "sendtochaterror Cannot click the dragon egg while you are in combat!";
+            }
+            else if (!_inInventory)
+            {
+                yield return "sendtochaterror Cannot click the dragon egg if not in the inventory!";
+            }
+            else if (_isAnimating)
+            {
+                yield return "sendtochaterror Cannot click the dragon egg while the module is animating!";
+            }
+            else
+            {
+                _allResourceInventoryIndicies[41].OnInteract();
+            }
+            yield break;
+        }
+        if (Regex.IsMatch(command, @"^\s*eat\s*$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant))
+        {
+            yield return null;
+            if (_inInventory)
+            {
+                yield return "sendtochaterror Cannot eat a cooked beef while in the inventory!";
+            }
+            else if (_isAnimating)
+            {
+                yield return "sendtochaterror Cannot eat a cooked beef while the module is animating!";
+            }
+            else
+            {
+                if (_fightStarted)
+                    _actionButtons[4].OnInteract();
+                else
+                    _actionButtons[6].OnInteract();
+            }
+            yield break;
+        }
+        if (Regex.IsMatch(command, @"^\s*attack\s*$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant))
+        {
+            yield return null;
+            if (!_fightStarted)
+            {
+                yield return "sendtochaterror Cannot attack a mob if you are not in combat!";
+            }
+            else if (_isAnimating)
+            {
+                yield return "sendtochaterror Cannot attack a mob while the module is animating!";
+            }
+            else
+            {
+                _actionButtons[3].OnInteract();
+            }
+            yield break;
+        }
+        if (Regex.IsMatch(command, @"^\s*dragon\s*$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant))
+        {
+            yield return null;
+            if (_fightStarted)
+            {
+                yield return "sendtochaterror Cannot enter the Ender Dragon battle while you are in combat!";
+            }
+            else if (_dimensionIndex != 2)
+            {
+                yield return "sendtochaterror Cannot enter the Ender Dragon battle if not in The End!";
+            }
+            else if (_dragonDefeated)
+            {
+                yield return "sendtochaterror Cannot enter the Ender Dragon battle since the Ender Dragon is dead!";
+            }
+            else if (_isAnimating)
+            {
+                yield return "sendtochaterror Cannot enter the Ender Dragon battle while the module is animating!";
+            }
+            else
+            {
+                _actionButtons[7].OnInteract();
+            }
+            yield break;
+        }
+        if (Regex.IsMatch(command, @"^\s*inventory\s*$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant) || Regex.IsMatch(command, @"^\s*inv\s*$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant))
+        {
+            yield return null;
+            if (_fightStarted)
+            {
+                yield return "sendtochaterror The inventory cannot be toggled while you are in combat!";
+            }
+            else if (_isAnimating)
+            {
+                yield return "sendtochaterror The inventory cannot be toggled while the module is animating!";
+            }
+            else
+            {
+                _actionButtons[5].OnInteract();
+            }
+            yield break;
+        }
+        string[] parameters = command.Split(' ');
+        if (Regex.IsMatch(parameters[0], @"^\s*amount\s*$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant) || Regex.IsMatch(parameters[0], @"^\s*amt\s*$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant))
+        {
+            yield return null;
+            if (_fightStarted)
+            {
+                yield return "sendtochaterror Cannot view the amount of an item while you are in combat!";
+            }
+            else if (!_inInventory)
+            {
+                yield return "sendtochaterror Cannot view the amount of an item if not in the inventory!";
+            }
+            else if (_isAnimating)
+            {
+                yield return "sendtochaterror Cannot view the amount of an item while the module is animating!";
+            }
+            else
+            {
+                if (parameters.Length == 1)
+                {
+                    yield return "sendtochaterror Please specify the item you wish to see the amount of!";
+                }
+                else
+                {
+                    string origitem = "";
+                    string item = "";
+                    if (parameters[0] == "amt")
+                        item = command.Substring(4);
+                    else
+                        item = command.Substring(7);
+                    origitem = item;
+                    item = item.ToLower();
+                    for (int i = 0; i < _allResourceInventoryIndicies.Length; i++)
+                    {
+                        if (item.Equals(_allResourceInventoryIndicies[i].name.ToLower()))
+                        {
+                            _allResourceInventoryIndicies[i].OnHighlight();
+                            yield return new WaitForSeconds(1f);
+                            _allResourceInventoryIndicies[i].OnHighlightEnded();
+                            yield break;
+                        }
+                    }
+                    yield return "sendtochaterror The specified item '" + origitem + "' does not exist!";
+                }
+            }
+            yield break;
+        }
+        if (Regex.IsMatch(parameters[0], @"^\s*craft\s*$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant))
+        {
+            yield return null;
+            if (_fightStarted)
+            {
+                yield return "sendtochaterror Cannot craft an item while you are in combat!";
+            }
+            else if (!_inInventory)
+            {
+                yield return "sendtochaterror Cannot craft an item if not in the inventory!";
+            }
+            else if (_isAnimating)
+            {
+                yield return "sendtochaterror Cannot craft an item while the module is animating!";
+            }
+            else
+            {
+                if (parameters.Length == 1)
+                {
+                    yield return "sendtochaterror Please specify the item you wish to craft!";
+                }
+                else
+                {
+                    int temp = -1;
+                    string origitem = "";
+                    string item = "";
+                    if (int.TryParse(parameters[1], out temp))
+                    {
+                        if (temp < 0)
+                        {
+                            yield return "sendtochaterror The specified number of times to craft '" + temp + "' is less than 1!";
+                            yield break;
+                        }
+                        origitem = command.Substring(7 + ("" + temp).Length);
+                        item = command.Substring(7 + ("" + temp).Length);
+                    }
+                    else
+                    {
+                        temp = 1;
+                        origitem = command.Substring(6);
+                        item = command.Substring(6);
+                    }
+                    item = item.ToLower();
+                    for (int i = 0; i < _allResourceInventoryIndicies.Length; i++)
+                    {
+                        if (item.Equals(GetResourceName(i).ToLower()))
+                        {
+                            for (int j = 0; j < _inventoryButtons.Length; j++)
+                            {
+                                if (item.Equals(_inventoryButtons[j].name.ToLower()))
+                                {
+                                    for (int k = 0; k < temp; k++)
+                                    {
+                                        _inventoryButtons[j].OnInteract();
+                                        yield return new WaitForSeconds(0.1f);
+                                    }
+                                    yield break;
+                                }
+                            }
+                            yield return "sendtochaterror The specified item '" + origitem + "' cannot be crafted!";
+                            yield break;
+                        }
+                    }
+                    yield return "sendtochaterror The specified item '" + origitem + "' does not exist!";
+                }
+            }
+            yield break;
+        }
+        if (Regex.IsMatch(parameters[0], @"^\s*gather\s*$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant))
+        {
+            yield return null;
+            if (_fightStarted)
+            {
+                yield return "sendtochaterror Cannot gather an item while you are in combat!";
+            }
+            else if (_inInventory)
+            {
+                yield return "sendtochaterror Cannot gather an item if in the inventory!";
+            }
+            else if (_isAnimating)
+            {
+                yield return "sendtochaterror Cannot gather an item while the module is animating!";
+            }
+            else
+            {
+                if (parameters.Length == 1)
+                {
+                    yield return "sendtochaterror Please specify the item you wish to gather!";
+                }
+                else
+                {
+                    int temp = -1;
+                    string origitem = "";
+                    string item = "";
+                    if (int.TryParse(parameters[1], out temp))
+                    {
+                        if (temp < 0)
+                        {
+                            yield return "sendtochaterror The specified number of times to gather '" + temp + "' is less than 1!";
+                            yield break;
+                        }
+                        origitem = command.Substring(8 + ("" + temp).Length);
+                        item = command.Substring(8 + ("" + temp).Length);
+                    }
+                    else
+                    {
+                        temp = 1;
+                        origitem = command.Substring(7);
+                        item = command.Substring(7);
+                    }
+                    item = item.ToLower();
+                    for (int i = 0; i < _allResourceInventoryIndicies.Length; i++)
+                    {
+                        if (item.Equals(GetResourceName(i).ToLower()))
+                        {
+                            for (int j = 0; j < _resourceButtons.Length; j++)
+                            {
+                                if (item.Equals(_resourceButtons[j].name.ToLower()))
+                                {
+                                    if (j == 6 && _dimensionIndex == 2)
+                                        j = 13;
+                                    if (_dimensionIndex != 0 && j < 8)
+                                    {
+                                        yield return "sendtochaterror You must be in " + (j == 6 ? "The Overworld/The End" : "The Overworld") + " to gather this item!";
+                                        yield break;
+                                    }
+                                    else if (_dimensionIndex != 1 && j > 7 && j < 12)
+                                    {
+                                        yield return "sendtochaterror You must be in The Nether to gather this item!";
+                                        yield break;
+                                    }
+                                    else if (_dimensionIndex != 2 && j > 11)
+                                    {
+                                        yield return "sendtochaterror You must be in The End to gather this item!";
+                                        yield break;
+                                    }
+                                    for (int k = 0; k < temp; k++)
+                                    {
+                                        _resourceButtons[j].OnInteract();
+                                        yield return new WaitForSeconds(0.1f);
+                                        if (_fightStarted && k != temp - 1)
+                                        {
+                                            yield return "sendtochat Halted gathering of items due to a mob encounter! Successfully gathered " + (k + 1) + " items before being halted!";
+                                            yield break;
+                                        }
+                                    }
+                                    yield break;
+                                }
+                            }
+                            yield return "sendtochaterror The specified item '" + origitem + "' cannot be gathered!";
+                            yield break;
+                        }
+                    }
+                    yield return "sendtochaterror The specified item '" + origitem + "' does not exist!";
+                }
+            }
+            yield break;
+        }
+        if (Regex.IsMatch(parameters[0], @"^\s*dimension\s*$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant) || Regex.IsMatch(parameters[0], @"^\s*dim\s*$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant))
+        {
+            yield return null;
+            if (_inInventory)
+            {
+                yield return "sendtochaterror Cannot attempt to change dimensions while in the inventory!";
+            }
+            else if (_fightStarted)
+            {
+                yield return "sendtochaterror Cannot attempt to change dimensions while in combat!";
+            }
+            else
+            {
+                if (parameters.Length == 1)
+                {
+                    yield return "sendtochaterror Please specify the dimension you wish to attempt to change to!";
+                }
+                else
+                {
+                    string origdim = "";
+                    string dim = "";
+                    if (parameters[0] == "dim")
+                        dim = command.Substring(4);
+                    else
+                        dim = command.Substring(10);
+                    origdim = dim;
+                    dim = dim.ToLower();
+                    string[] dimensions = new string[] { "the overworld", "the nether", "the end" };
+                    if (dimensions.Contains(dim))
+                    {
+                        if (Array.IndexOf(dimensions, dim) == _dimensionIndex)
+                        {
+                            yield return "sendtochaterror You are already in this dimension!";
+                            yield break;
+                        }
+                        _actionButtons[Array.IndexOf(dimensions, dim)].OnInteract();
+                        yield break;
+                    }
+                    yield return "sendtochaterror The specified dimension '" + origdim + "' does not exist!";
+                }
+            }
+            yield break;
+        }
+    }
+
+    IEnumerator TwitchHandleForcedSolve()
+    {
+        for (int i = 0; i < 2; i++)
+        {
+            _resourceButtons[0].OnInteract();
+            yield return new WaitForSeconds(0.1f);
+        }
+        _actionButtons[5].OnInteract();
+        while (_isAnimating) { yield return true; yield return new WaitForSeconds(0.1f); }
+        for (int i = 0; i < 3; i++)
+        {
+            _inventoryButtons[0].OnInteract();
+            yield return new WaitForSeconds(0.1f);
+        }
+        for (int i = 0; i < 2; i++)
+        {
+            _inventoryButtons[1].OnInteract();
+            yield return new WaitForSeconds(0.1f);
+        }
+        _inventoryButtons[5].OnInteract();
+        yield return new WaitForSeconds(0.1f);
+        _inventoryButtons[10].OnInteract();
+        yield return new WaitForSeconds(0.1f);
+        _actionButtons[5].OnInteract();
+        while (_isAnimating) { yield return true; yield return new WaitForSeconds(0.1f); }
+        while (_materialValues[19] < 16)
+        {
+            if (_playerHunger == 1)
+            {
+                _actionButtons[6].OnInteract();
+                yield return new WaitForSeconds(0.1f);
+            }
+            _resourceButtons[1].OnInteract();
+            yield return new WaitForSeconds(0.1f);
+        }
+        if (_playerHunger == 1)
+        {
+            _actionButtons[6].OnInteract();
+            yield return new WaitForSeconds(0.1f);
+        }
+        _resourceButtons[5].OnInteract();
+        yield return new WaitForSeconds(0.1f);
+        while (_materialValues[20] < 15)
+        {
+            if (_playerHunger == 1)
+            {
+                _actionButtons[6].OnInteract();
+                yield return new WaitForSeconds(0.1f);
+            }
+            _resourceButtons[2].OnInteract();
+            yield return new WaitForSeconds(0.1f);
+        }
+        _actionButtons[5].OnInteract();
+        while (_isAnimating) { yield return true; yield return new WaitForSeconds(0.1f); }
+        _inventoryButtons[2].OnInteract();
+        yield return new WaitForSeconds(0.1f);
+        _inventoryButtons[6].OnInteract();
+        yield return new WaitForSeconds(0.1f);
+        _actionButtons[5].OnInteract();
+        while (_isAnimating) { yield return true; yield return new WaitForSeconds(0.1f); }
+        while (_materialValues[21] < 11)
+        {
+            if (_playerHunger == 1)
+            {
+                _actionButtons[6].OnInteract();
+                yield return new WaitForSeconds(0.1f);
+            }
+            _resourceButtons[3].OnInteract();
+            yield return new WaitForSeconds(0.1f);
+        }
+        _actionButtons[5].OnInteract();
+        while (_isAnimating) { yield return true; yield return new WaitForSeconds(0.1f); }
+        while (_materialValues[3] < 11)
+        {
+            _inventoryButtons[3].OnInteract();
+            yield return new WaitForSeconds(0.1f);
+        }
+        _inventoryButtons[7].OnInteract();
+        yield return new WaitForSeconds(0.1f);
+        _inventoryButtons[19].OnInteract();
+        yield return new WaitForSeconds(0.1f);
+        _actionButtons[5].OnInteract();
+        while (_isAnimating) { yield return true; yield return new WaitForSeconds(0.1f); }
+        while (_materialValues[22] < 36)
+        {
+            if (_playerHunger == 1)
+            {
+                _actionButtons[6].OnInteract();
+                yield return new WaitForSeconds(0.1f);
+            }
+            _resourceButtons[4].OnInteract();
+            yield return new WaitForSeconds(0.1f);
+        }
+        _actionButtons[5].OnInteract();
+        while (_isAnimating) { yield return true; yield return new WaitForSeconds(0.1f); }
+        _inventoryButtons[8].OnInteract();
+        yield return new WaitForSeconds(0.1f);
+        _inventoryButtons[16].OnInteract();
+        yield return new WaitForSeconds(0.1f);
+        _inventoryButtons[11].OnInteract();
+        yield return new WaitForSeconds(0.1f);
+        _inventoryButtons[12].OnInteract();
+        yield return new WaitForSeconds(0.1f);
+        _inventoryButtons[13].OnInteract();
+        yield return new WaitForSeconds(0.1f);
+        _inventoryButtons[14].OnInteract();
+        yield return new WaitForSeconds(0.1f);
+        _actionButtons[5].OnInteract();
+        while (_isAnimating) { yield return true; yield return new WaitForSeconds(0.1f); }
+        while (_materialValues[24] < 10)
+        {
+            if (_playerHunger == 1)
+            {
+                if (_materialValues[4] == 0)
+                {
+                    _actionButtons[5].OnInteract();
+                    while (_isAnimating) { yield return true; yield return new WaitForSeconds(0.1f); }
+                    _inventoryButtons[4].OnInteract();
+                    yield return new WaitForSeconds(0.1f);
+                    _actionButtons[5].OnInteract();
+                    while (_isAnimating) { yield return true; yield return new WaitForSeconds(0.1f); }
+                }
+                _actionButtons[6].OnInteract();
+                yield return new WaitForSeconds(0.1f);
+            }
+            _resourceButtons[7].OnInteract();
+            yield return new WaitForSeconds(0.1f);
+            if (_fightStarted)
+            {
+                while (_isAnimating) { yield return true; yield return new WaitForSeconds(0.1f); }
+                while (_gMonsterHealth > 0)
+                {
+                    _actionButtons[3].OnInteract();
+                    yield return new WaitForSeconds(0.1f);
+                }
+            }
+        }
+        _actionButtons[5].OnInteract();
+        while (_isAnimating) { yield return true; yield return new WaitForSeconds(0.1f); }
+        while (_materialValues[4] < 10)
+        {
+            _inventoryButtons[4].OnInteract();
+            yield return new WaitForSeconds(0.1f);
+        }
+        _actionButtons[5].OnInteract();
+        while (_isAnimating) { yield return true; yield return new WaitForSeconds(0.1f); }
+        while (_materialValues[25] < 14)
+        {
+            if (_playerHunger == 1)
+            {
+                _actionButtons[6].OnInteract();
+                yield return new WaitForSeconds(0.1f);
+            }
+            _resourceButtons[6].OnInteract();
+            yield return new WaitForSeconds(0.1f);
+            if (_fightStarted)
+            {
+                while (_isAnimating) { yield return true; yield return new WaitForSeconds(0.1f); }
+                while (_gMonsterHealth > 0)
+                {
+                    _actionButtons[3].OnInteract();
+                    yield return new WaitForSeconds(0.1f);
+                }
+            }
+        }
+        _actionButtons[1].OnInteract();
+        yield return new WaitForSeconds(0.1f);
+        while (_materialValues[32] < 6 || _materialValues[33] < 12)
+        {
+            if (_materialValues[4] == 1)
+            {
+                _actionButtons[0].OnInteract();
+                yield return new WaitForSeconds(0.1f);
+                _resourceButtons[2].OnInteract();
+                yield return new WaitForSeconds(0.1f);
+                if (_fightStarted)
+                {
+                    while (_isAnimating) { yield return true; yield return new WaitForSeconds(0.1f); }
+                    while (_gMonsterHealth > 0)
+                    {
+                        _actionButtons[3].OnInteract();
+                        yield return new WaitForSeconds(0.1f);
+                    }
+                }
+                _resourceButtons[7].OnInteract();
+                yield return new WaitForSeconds(0.1f);
+                _actionButtons[5].OnInteract();
+                while (_isAnimating) { yield return true; yield return new WaitForSeconds(0.1f); }
+                _inventoryButtons[4].OnInteract();
+                yield return new WaitForSeconds(0.1f);
+                _actionButtons[5].OnInteract();
+                while (_isAnimating) { yield return true; yield return new WaitForSeconds(0.1f); }
+                _actionButtons[1].OnInteract();
+                yield return new WaitForSeconds(0.1f);
+            }
+            if (_playerHunger == 1)
+            {
+                _actionButtons[6].OnInteract();
+                yield return new WaitForSeconds(0.1f);
+            }
+            if (_materialValues[34] < 63)
+            {
+                _resourceButtons[8].OnInteract();
+                yield return new WaitForSeconds(0.1f);
+            }
+            else if (_materialValues[26] < 63)
+            {
+                _resourceButtons[9].OnInteract();
+                yield return new WaitForSeconds(0.1f);
+            }
+            else if (_materialValues[27] < 63)
+            {
+                _resourceButtons[10].OnInteract();
+                yield return new WaitForSeconds(0.1f);
+            }
+            else if (_materialValues[28] < 63)
+            {
+                _resourceButtons[11].OnInteract();
+                yield return new WaitForSeconds(0.1f);
+            }
+            else
+            {
+                _resourceButtons[rand.Range(8, 12)].OnInteract();
+                yield return new WaitForSeconds(0.1f);
+            }
+            if (_fightStarted)
+            {
+                while (_isAnimating) { yield return true; yield return new WaitForSeconds(0.1f); }
+                while (_gMonsterHealth > 0)
+                {
+                    _actionButtons[3].OnInteract();
+                    yield return new WaitForSeconds(0.1f);
+                }
+            }
+        }
+        _actionButtons[5].OnInteract();
+        while (_isAnimating) { yield return true; yield return new WaitForSeconds(0.1f); }
+        for (int i = 0; i < 6; i++)
+        {
+            _inventoryButtons[17].OnInteract();
+            yield return new WaitForSeconds(0.1f);
+        }
+        for (int i = 0; i < 12; i++)
+        {
+            _inventoryButtons[18].OnInteract();
+            yield return new WaitForSeconds(0.1f);
+        }
+        _actionButtons[5].OnInteract();
+        while (_isAnimating) { yield return true; yield return new WaitForSeconds(0.1f); }
+        _actionButtons[2].OnInteract();
+        yield return new WaitForSeconds(0.1f);
+        _actionButtons[7].OnInteract();
+        yield return new WaitForSeconds(0.1f);
+        while (_isAnimating) { yield return true; yield return new WaitForSeconds(0.1f); }
+        while (_gMonsterHealth > 0)
+        {
+            _actionButtons[3].OnInteract();
+            yield return new WaitForSeconds(0.1f);
+        }
+        _actionButtons[5].OnInteract();
+        while (_isAnimating) { yield return true; yield return new WaitForSeconds(0.1f); }
+        GetComponent<KMSelectable>().Children[63].OnInteract();
+    }
 }

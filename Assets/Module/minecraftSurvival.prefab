@@ -1095,7 +1095,7 @@ GameObject:
   - component: {fileID: 114441533748496022}
   - component: {fileID: 114192401902581428}
   m_Layer: 0
-  m_Name: Purpur Block
+  m_Name: Purpur Blocks
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1667,7 +1667,7 @@ GameObject:
   - component: {fileID: 114753245780514794}
   - component: {fileID: 114285322429689254}
   m_Layer: 0
-  m_Name: EndStone
+  m_Name: End Stone
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2047,7 +2047,7 @@ GameObject:
   - component: {fileID: 114918991601063984}
   - component: {fileID: 114896850429000334}
   m_Layer: 0
-  m_Name: Logs
+  m_Name: Wooden Log
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2191,7 +2191,7 @@ GameObject:
   - component: {fileID: 114369990907332244}
   - component: {fileID: 114702821232481456}
   m_Layer: 0
-  m_Name: Planks
+  m_Name: Wooden Planks
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2333,7 +2333,7 @@ GameObject:
   - component: {fileID: 114513268983202268}
   - component: {fileID: 114494528688709652}
   m_Layer: 0
-  m_Name: Purpur
+  m_Name: Purpur Blocks
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2824,7 +2824,7 @@ GameObject:
   - component: {fileID: 114573991722452070}
   - component: {fileID: 114812396674014876}
   m_Layer: 0
-  m_Name: Log
+  m_Name: Wooden Log
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
