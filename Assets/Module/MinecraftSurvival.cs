@@ -2546,9 +2546,9 @@ public class MinecraftSurvival : MonoBehaviour
                                     {
                                         _resourceButtons[j].OnInteract();
                                         yield return new WaitForSeconds(0.1f);
-                                        if (_fightStarted)
+                                        if (_fightStarted && k != temp - 1)
                                         {
-                                            yield return "sendtochat Halted gathering of items due to a mob encounter!";
+                                            yield return "sendtochat Halted gathering of items due to a mob encounter! Successfully gathered " + (k + 1) + " items before being halted!";
                                             yield break;
                                         }
                                     }
