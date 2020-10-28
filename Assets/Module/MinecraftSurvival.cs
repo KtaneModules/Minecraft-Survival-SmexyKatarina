@@ -1352,7 +1352,8 @@ public class MinecraftSurvival : MonoBehaviour
 			bAudio.PlaySoundAtTransform("end", transform);
 			_dragonDefeated = true;
 			_dragonFightStarted = false;
-			_mobIndicator.enabled = false;
+            _fightStarted = false;
+            _mobIndicator.enabled = false;
 			_mobHealthIndicator.text = "";
 			UpdateModule();
 			_materialValues[41]++;
@@ -2295,8 +2296,12 @@ public class MinecraftSurvival : MonoBehaviour
 			{
 				if (_fightStarted)
 					_actionButtons[4].OnInteract();
-				else
-					_actionButtons[6].OnInteract();
+                else if (_playerHunger != 10)
+                {
+                    _actionButtons[6].OnInteract();
+                    yield return new WaitForSeconds(1f);
+                    _actionButtons[6].OnHighlightEnded();
+                }
 			}
 			yield break;
 		}
@@ -2462,7 +2467,9 @@ public class MinecraftSurvival : MonoBehaviour
 										_inventoryButtons[j].OnInteract();
 										yield return new WaitForSeconds(0.1f);
 									}
-									yield break;
+                                    yield return new WaitForSeconds(0.9f);
+                                    _inventoryButtons[j].OnHighlightEnded();
+                                    yield break;
 								}
 							}
 							yield return "sendtochaterror The specified item '" + origitem + "' cannot be crafted!";
@@ -2556,11 +2563,14 @@ public class MinecraftSurvival : MonoBehaviour
 										yield return new WaitForSeconds(0.1f);
 										if (_fightStarted && k != temp - 1)
 										{
-											yield return "sendtochat Halted gathering of items due to a mob encounter! Successfully gathered " + (k + 1) + " items before being halted!";
-											yield break;
+                                            _resourceButtons[j].OnHighlightEnded();
+                                            yield return "sendtochat Halted gathering of items due to a mob encounter! Successfully gathered " + (k + 1) + " times before being halted!";
+                                            yield break;
 										}
 									}
-									yield break;
+                                    yield return new WaitForSeconds(0.9f);
+                                    _resourceButtons[j].OnHighlightEnded();
+                                    yield break;
 								}
 							}
 							yield return "sendtochaterror The specified item '" + origitem + "' cannot be gathered!";
