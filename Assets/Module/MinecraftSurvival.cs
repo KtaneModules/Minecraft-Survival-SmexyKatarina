@@ -2530,6 +2530,8 @@ public class MinecraftSurvival : MonoBehaviour
 							item = "coal";
 						else if (item.Equals("diamond ore"))
 							item = "diamonds";
+						else if (item.Equals("gravel"))
+							item = "flint";
 						if (item.Equals(GetResourceName(i).ToLower()))
 						{
 							for (int j = 0; j < _resourceButtons.Length; j++)
@@ -2538,6 +2540,8 @@ public class MinecraftSurvival : MonoBehaviour
 									item = "coal ore";
 								else if (item.Equals("diamonds"))
 									item = "diamond ore";
+								else if (item.Equals("flint"))
+									item = "gravel";
 								if (item.Equals(_resourceButtons[j].name.ToLower()))
 								{
 									if (j == 6 && _dimensionIndex == 2)
