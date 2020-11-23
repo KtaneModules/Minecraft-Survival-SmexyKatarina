@@ -651,6 +651,7 @@ public class MinecraftSurvival : MonoBehaviour
 		string result = (plural ? "" : item.EqualsAny(7, 13, 18) ? "an " : "a ") + GetResourceName(item);
 		Debug.LogFormat("[Minecraft Survival #{0}] Strike! You don't have the correct item or items [{1}] to craft {2}", _modID, stuff, result);
 	}
+	
 	void InventoryButton(KMSelectable but)
 	{
 		if (_isAnimating) { return; }
@@ -2256,10 +2257,16 @@ public class MinecraftSurvival : MonoBehaviour
 
 	//twitch plays
 	#pragma warning disable 414
-	private readonly string TwitchHelpMessage = @"!{0} inventory/inv [Toggles being in and out of the inventory] | !{0} amount/amt <item> [See the amount of the specified item in the inventory] | !{0} craft (#) <item> [Crafts the specified item in the inventory (optionally '#' times)] | !{0} dimension/dim <dimension> [Changes to the specified dimension] | !{0} gather (#) <item> [Gathers the specified item (optionally '#' times)] | !{0} eat [Eats a cooked beef] | !{0} attack (#) [Attacks a mob in a fight (optionally '#' times)] | !{0} dragon [Enter the Ender Dragon battle] | !{0} egg [Clicks the dragon egg in the inventory]";
+	private readonly string TwitchHelpMessage = @"!{0} inventory/inv [Toggles being in and out of the inventory] | !{0} amount/amt <item> [See the amount of the specified item in the inventory] | !{0} craft (#) <item> [Crafts the specified item in the inventory (optionally '#' times)] | !{0} dimension/dim <dimension> [Changes to the specified dimension] | !{0} gather (#) <item> [Gathers the specified item (optionally '#' times)] | !{0} eat [Eats a cooked beef] | !{0} attack (#) [Attacks a mob in a fight (optionally '#' times)] | !{0} items [Gives a list of typical items you'd use] | !{0} dragon [Enter the Ender Dragon battle] | !{0} egg [Clicks the dragon egg in the inventory]";
 	#pragma warning restore 414
 	IEnumerator ProcessTwitchCommand(string command)
 	{
+		if (Regex.IsMatch(command, @"^\s*items\s*$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)) 
+		{
+			yield return "sendtochat The possible gatherable items to be used are " + _resourceButtons.Select(x => x.name).Join(", ") + ".";
+			yield return "sendtochat The possible craftable items to be used are " + _inventoryButtons.Select(x => x.name).Join(", ") + ".";
+			yield break;
+		}
 		if (Regex.IsMatch(command, @"^\s*egg\s*$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant))
 		{
 			yield return null;
