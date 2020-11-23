@@ -1040,7 +1040,7 @@ public class MinecraftSurvival : MonoBehaviour
 			_resourceUntilFight = rand.Range(2, 7);
 			return;
 		}
-		if (_dragonFightStarted)
+        if (_dragonFightStarted)
 		{
 			foreach (KMSelectable km in _resourceButtons)
 			{
@@ -1095,7 +1095,7 @@ public class MinecraftSurvival : MonoBehaviour
 			_gMonsterDamage = _monsterDamage[10];
 			_gMonsterHealth = _monsterHealth[10];
 			_mobHealthIndicator.text = _gMonsterHealth.ToString();
-			StartCoroutine(UpHearts());
+            StartCoroutine(UpHearts());
 			Debug.LogFormat("[Minecraft Survival #{0}] The monster you are fighting is {1} and it has {2} health and {3} damage.", _modID, _monsterIndex[_gMonsterIndex], _monsterHealth[_gMonsterIndex], _monsterDamage[_gMonsterIndex]);
 			return;
 		}
@@ -1250,7 +1250,7 @@ public class MinecraftSurvival : MonoBehaviour
 				break;
 		}
 		_mobIndicator.enabled = true;
-		Debug.LogFormat("[Minecraft Survival #{0}] The monster you are fighting is {1} and it has {2} health and {3} damage.", _modID, _monsterIndex[_gMonsterIndex], _monsterHealth[_gMonsterIndex], _monsterDamage[_gMonsterIndex]);
+        Debug.LogFormat("[Minecraft Survival #{0}] The monster you are fighting is {1} and it has {2} health and {3} damage.", _modID, _monsterIndex[_gMonsterIndex], _monsterHealth[_gMonsterIndex], _monsterDamage[_gMonsterIndex]);
 
 		foreach (KMSelectable km in _resourceButtons)
 		{
@@ -1363,8 +1363,8 @@ public class MinecraftSurvival : MonoBehaviour
 		{
 			_fightStarted = false;
 			_fightReset = true;
-			_resourceUntilFight = rand.Range(6, 13);
-			_mobIndicator.enabled = false;
+            _resourceUntilFight = rand.Range(6, 13);
+            _mobIndicator.enabled = false;
 			_mobHealthIndicator.text = "";
 			UpdateModule();
 			int drop = GiveMobDrop();
@@ -1382,7 +1382,7 @@ public class MinecraftSurvival : MonoBehaviour
 				_fightStarted = false;
 				_fightReset = true;
 				_resourceUntilFight = rand.Range(6, 13);
-				_mobIndicator.enabled = false;
+                _mobIndicator.enabled = false;
 				_mobHealthIndicator.text = "";
 				UpdateModule();
 				Debug.LogFormat("[Minecraft Survival #{0}] You died by a {1}. Strike!", _modID, _gMonsterName);
@@ -1408,9 +1408,9 @@ public class MinecraftSurvival : MonoBehaviour
 				_fightStarted = false;
 				_fightReset = true;
 				_resourceUntilFight = rand.Range(6, 13);
-				_mobIndicator.enabled = false;
+                _mobIndicator.enabled = false;
 				_mobHealthIndicator.text = "";
-				UpdateModule();
+                UpdateModule();
 				Debug.LogFormat("[Minecraft Survival #{0}] You died by a {1}. Strike!", _modID, _gMonsterName);
 				GetComponent<KMBombModule>().HandleStrike();
 				return;
@@ -1434,9 +1434,9 @@ public class MinecraftSurvival : MonoBehaviour
 				_fightStarted = false;
 				_fightReset = true;
 				_resourceUntilFight = rand.Range(6, 13);
-				_mobIndicator.enabled = false;
+                _mobIndicator.enabled = false;
 				_mobHealthIndicator.text = "";
-				UpdateModule();
+                UpdateModule();
 				Debug.LogFormat("[Minecraft Survival #{0}] A Creeper blew you up. You died, aw man. Strike!", _modID);
 				GetComponent<KMBombModule>().HandleStrike();
 				return;
@@ -2256,7 +2256,7 @@ public class MinecraftSurvival : MonoBehaviour
 
 	//twitch plays
 	#pragma warning disable 414
-	private readonly string TwitchHelpMessage = @"!{0} inventory/inv [Toggles being in and out of the inventory] | !{0} amount/amt <item> [See the amount of the specified item in the inventory] | !{0} craft (#) <item> [Crafts the specified item in the inventory (optionally '#' times)] | !{0} dimension/dim <dimension> [Changes to the specified dimension] | !{0} gather (#) <item> [Gathers the specified item (optionally '#' times)] | !{0} eat [Eats a cooked beef] | !{0} attack [Attacks a mob in a fight] | !{0} dragon [Enter the Ender Dragon battle] | !{0} egg [Clicks the dragon egg in the inventory]";
+	private readonly string TwitchHelpMessage = @"!{0} inventory/inv [Toggles being in and out of the inventory] | !{0} amount/amt <item> [See the amount of the specified item in the inventory] | !{0} craft (#) <item> [Crafts the specified item in the inventory (optionally '#' times)] | !{0} dimension/dim <dimension> [Changes to the specified dimension] | !{0} gather (#) <item> [Gathers the specified item (optionally '#' times)] | !{0} eat [Eats a cooked beef] | !{0} attack (#) [Attacks a mob in a fight (optionally '#' times)] | !{0} dragon [Enter the Ender Dragon battle] | !{0} egg [Clicks the dragon egg in the inventory]";
 	#pragma warning restore 414
 	IEnumerator ProcessTwitchCommand(string command)
 	{
@@ -2305,23 +2305,6 @@ public class MinecraftSurvival : MonoBehaviour
 			}
 			yield break;
 		}
-		if (Regex.IsMatch(command, @"^\s*attack\s*$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant))
-		{
-			yield return null;
-			if (!_fightStarted)
-			{
-				yield return "sendtochaterror Cannot attack a mob if you are not in combat!";
-			}
-			else if (_isAnimating)
-			{
-				yield return "sendtochaterror Cannot attack a mob while the module is animating!";
-			}
-			else
-			{
-				_actionButtons[3].OnInteract();
-			}
-			yield break;
-		}
 		if (Regex.IsMatch(command, @"^\s*dragon\s*$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant))
 		{
 			yield return null;
@@ -2365,7 +2348,50 @@ public class MinecraftSurvival : MonoBehaviour
 			yield break;
 		}
 		string[] parameters = command.Split(' ');
-		if (Regex.IsMatch(parameters[0], @"^\s*amount\s*$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant) || Regex.IsMatch(parameters[0], @"^\s*amt\s*$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant))
+        if (Regex.IsMatch(parameters[0], @"^\s*attack\s*$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant))
+        {
+            yield return null;
+            if (!_fightStarted)
+            {
+                yield return "sendtochaterror Cannot attack a mob if you are not in combat!";
+            }
+            else if (_isAnimating)
+            {
+                yield return "sendtochaterror Cannot attack a mob while the module is animating!";
+            }
+            else
+            {
+                if (parameters.Length == 2)
+                {
+                    int temp = 0;
+                    if (!int.TryParse(parameters[1], out temp))
+                    {
+                        yield return "sendtochaterror The specified number of times to attack '" + parameters[1] + "' is invalid!";
+                        yield break;
+                    }
+                    if (temp < 1)
+                    {
+                        yield return "sendtochaterror The specified number of times to attack '" + parameters[1] + "' is less than 1!";
+                        yield break;
+                    }
+                    for (int i = 0; i < temp; i++)
+                    {
+                        _actionButtons[3].OnInteract();
+                        yield return new WaitForSeconds(0.1f);
+                        if (!_fightStarted && i != temp - 1)
+                        {
+                            yield break;
+                        }
+                    }
+                }
+                else if (parameters.Length == 1)
+                {
+                    _actionButtons[3].OnInteract();
+                }
+            }
+            yield break;
+        }
+        if (Regex.IsMatch(parameters[0], @"^\s*amount\s*$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant) || Regex.IsMatch(parameters[0], @"^\s*amt\s*$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant))
 		{
 			yield return null;
 			if (_fightStarted)
@@ -2639,7 +2665,7 @@ public class MinecraftSurvival : MonoBehaviour
 			yield return new WaitForSeconds(0.1f);
 		}
 		_actionButtons[5].OnInteract();
-		while (_isAnimating) { yield return true; yield return new WaitForSeconds(0.1f); }
+		while (_isAnimating) { yield return true; }
 		for (int i = 0; i < 3; i++)
 		{
 			_inventoryButtons[0].OnInteract();
@@ -2655,7 +2681,7 @@ public class MinecraftSurvival : MonoBehaviour
 		_inventoryButtons[10].OnInteract();
 		yield return new WaitForSeconds(0.1f);
 		_actionButtons[5].OnInteract();
-		while (_isAnimating) { yield return true; yield return new WaitForSeconds(0.1f); }
+		while (_isAnimating) { yield return true; }
 		while (_materialValues[19] < 16)
 		{
 			if (_playerHunger == 1)
@@ -2684,13 +2710,13 @@ public class MinecraftSurvival : MonoBehaviour
 			yield return new WaitForSeconds(0.1f);
 		}
 		_actionButtons[5].OnInteract();
-		while (_isAnimating) { yield return true; yield return new WaitForSeconds(0.1f); }
+		while (_isAnimating) { yield return true; }
 		_inventoryButtons[2].OnInteract();
 		yield return new WaitForSeconds(0.1f);
 		_inventoryButtons[6].OnInteract();
 		yield return new WaitForSeconds(0.1f);
 		_actionButtons[5].OnInteract();
-		while (_isAnimating) { yield return true; yield return new WaitForSeconds(0.1f); }
+		while (_isAnimating) { yield return true; }
 		while (_materialValues[21] < 11)
 		{
 			if (_playerHunger == 1)
@@ -2702,7 +2728,7 @@ public class MinecraftSurvival : MonoBehaviour
 			yield return new WaitForSeconds(0.1f);
 		}
 		_actionButtons[5].OnInteract();
-		while (_isAnimating) { yield return true; yield return new WaitForSeconds(0.1f); }
+		while (_isAnimating) { yield return true; }
 		while (_materialValues[3] < 11)
 		{
 			_inventoryButtons[3].OnInteract();
@@ -2713,7 +2739,7 @@ public class MinecraftSurvival : MonoBehaviour
 		_inventoryButtons[19].OnInteract();
 		yield return new WaitForSeconds(0.1f);
 		_actionButtons[5].OnInteract();
-		while (_isAnimating) { yield return true; yield return new WaitForSeconds(0.1f); }
+		while (_isAnimating) { yield return true; }
 		while (_materialValues[22] < 36)
 		{
 			if (_playerHunger == 1)
@@ -2725,7 +2751,7 @@ public class MinecraftSurvival : MonoBehaviour
 			yield return new WaitForSeconds(0.1f);
 		}
 		_actionButtons[5].OnInteract();
-		while (_isAnimating) { yield return true; yield return new WaitForSeconds(0.1f); }
+		while (_isAnimating) { yield return true; }
 		_inventoryButtons[8].OnInteract();
 		yield return new WaitForSeconds(0.1f);
 		_inventoryButtons[16].OnInteract();
@@ -2739,7 +2765,7 @@ public class MinecraftSurvival : MonoBehaviour
 		_inventoryButtons[14].OnInteract();
 		yield return new WaitForSeconds(0.1f);
 		_actionButtons[5].OnInteract();
-		while (_isAnimating) { yield return true; yield return new WaitForSeconds(0.1f); }
+		while (_isAnimating) { yield return true; }
 		while (_materialValues[24] < 10)
 		{
 			if (_playerHunger == 1)
@@ -2747,11 +2773,11 @@ public class MinecraftSurvival : MonoBehaviour
 				if (_materialValues[4] == 0)
 				{
 					_actionButtons[5].OnInteract();
-					while (_isAnimating) { yield return true; yield return new WaitForSeconds(0.1f); }
+					while (_isAnimating) { yield return true; }
 					_inventoryButtons[4].OnInteract();
 					yield return new WaitForSeconds(0.1f);
 					_actionButtons[5].OnInteract();
-					while (_isAnimating) { yield return true; yield return new WaitForSeconds(0.1f); }
+					while (_isAnimating) { yield return true; }
 				}
 				_actionButtons[6].OnInteract();
 				yield return new WaitForSeconds(0.1f);
@@ -2760,7 +2786,8 @@ public class MinecraftSurvival : MonoBehaviour
 			yield return new WaitForSeconds(0.1f);
 			if (_fightStarted)
 			{
-				while (_isAnimating) { yield return true; yield return new WaitForSeconds(0.1f); }
+                _resourceButtons[7].OnHighlightEnded();
+                while (_isAnimating) { yield return true; }
 				while (_gMonsterHealth > 0)
 				{
 					_actionButtons[3].OnInteract();
@@ -2769,14 +2796,14 @@ public class MinecraftSurvival : MonoBehaviour
 			}
 		}
 		_actionButtons[5].OnInteract();
-		while (_isAnimating) { yield return true; yield return new WaitForSeconds(0.1f); }
+		while (_isAnimating) { yield return true; }
 		while (_materialValues[4] < 10)
 		{
 			_inventoryButtons[4].OnInteract();
 			yield return new WaitForSeconds(0.1f);
 		}
 		_actionButtons[5].OnInteract();
-		while (_isAnimating) { yield return true; yield return new WaitForSeconds(0.1f); }
+		while (_isAnimating) { yield return true; }
 		while (_materialValues[25] < 14)
 		{
 			if (_playerHunger == 1)
@@ -2788,7 +2815,8 @@ public class MinecraftSurvival : MonoBehaviour
 			yield return new WaitForSeconds(0.1f);
 			if (_fightStarted)
 			{
-				while (_isAnimating) { yield return true; yield return new WaitForSeconds(0.1f); }
+                _resourceButtons[6].OnHighlightEnded();
+                while (_isAnimating) { yield return true; }
 				while (_gMonsterHealth > 0)
 				{
 					_actionButtons[3].OnInteract();
@@ -2808,7 +2836,8 @@ public class MinecraftSurvival : MonoBehaviour
 				yield return new WaitForSeconds(0.1f);
 				if (_fightStarted)
 				{
-					while (_isAnimating) { yield return true; yield return new WaitForSeconds(0.1f); }
+                    _resourceButtons[2].OnHighlightEnded();
+                    while (_isAnimating) { yield return true; }
 					while (_gMonsterHealth > 0)
 					{
 						_actionButtons[3].OnInteract();
@@ -2817,12 +2846,22 @@ public class MinecraftSurvival : MonoBehaviour
 				}
 				_resourceButtons[7].OnInteract();
 				yield return new WaitForSeconds(0.1f);
-				_actionButtons[5].OnInteract();
-				while (_isAnimating) { yield return true; yield return new WaitForSeconds(0.1f); }
+                if (_fightStarted)
+                {
+                    _resourceButtons[7].OnHighlightEnded();
+                    while (_isAnimating) { yield return true; }
+                    while (_gMonsterHealth > 0)
+                    {
+                        _actionButtons[3].OnInteract();
+                        yield return new WaitForSeconds(0.1f);
+                    }
+                }
+                _actionButtons[5].OnInteract();
+				while (_isAnimating) { yield return true; }
 				_inventoryButtons[4].OnInteract();
 				yield return new WaitForSeconds(0.1f);
 				_actionButtons[5].OnInteract();
-				while (_isAnimating) { yield return true; yield return new WaitForSeconds(0.1f); }
+				while (_isAnimating) { yield return true; }
 				_actionButtons[1].OnInteract();
 				yield return new WaitForSeconds(0.1f);
 			}
@@ -2831,34 +2870,41 @@ public class MinecraftSurvival : MonoBehaviour
 				_actionButtons[6].OnInteract();
 				yield return new WaitForSeconds(0.1f);
 			}
+            int lastpress = 0;
 			if (_materialValues[34] < 63)
 			{
-				_resourceButtons[8].OnInteract();
+                lastpress = 8;
+                _resourceButtons[8].OnInteract();
 				yield return new WaitForSeconds(0.1f);
 			}
 			else if (_materialValues[26] < 63)
 			{
-				_resourceButtons[9].OnInteract();
+                lastpress = 9;
+                _resourceButtons[9].OnInteract();
 				yield return new WaitForSeconds(0.1f);
 			}
 			else if (_materialValues[27] < 63)
 			{
-				_resourceButtons[10].OnInteract();
+                lastpress = 10;
+                _resourceButtons[10].OnInteract();
 				yield return new WaitForSeconds(0.1f);
 			}
 			else if (_materialValues[28] < 63)
 			{
-				_resourceButtons[11].OnInteract();
+                lastpress = 11;
+                _resourceButtons[11].OnInteract();
 				yield return new WaitForSeconds(0.1f);
 			}
 			else
 			{
-				_resourceButtons[rand.Range(8, 12)].OnInteract();
+                lastpress = rand.Range(8, 12);
+                _resourceButtons[lastpress].OnInteract();
 				yield return new WaitForSeconds(0.1f);
 			}
 			if (_fightStarted)
 			{
-				while (_isAnimating) { yield return true; yield return new WaitForSeconds(0.1f); }
+                _resourceButtons[lastpress].OnHighlightEnded();
+                while (_isAnimating) { yield return true; }
 				while (_gMonsterHealth > 0)
 				{
 					_actionButtons[3].OnInteract();
@@ -2867,7 +2913,7 @@ public class MinecraftSurvival : MonoBehaviour
 			}
 		}
 		_actionButtons[5].OnInteract();
-		while (_isAnimating) { yield return true; yield return new WaitForSeconds(0.1f); }
+		while (_isAnimating) { yield return true; }
 		for (int i = 0; i < 6; i++)
 		{
 			_inventoryButtons[17].OnInteract();
@@ -2879,19 +2925,19 @@ public class MinecraftSurvival : MonoBehaviour
 			yield return new WaitForSeconds(0.1f);
 		}
 		_actionButtons[5].OnInteract();
-		while (_isAnimating) { yield return true; yield return new WaitForSeconds(0.1f); }
+		while (_isAnimating) { yield return true; }
 		_actionButtons[2].OnInteract();
 		yield return new WaitForSeconds(0.1f);
 		_actionButtons[7].OnInteract();
 		yield return new WaitForSeconds(0.1f);
-		while (_isAnimating) { yield return true; yield return new WaitForSeconds(0.1f); }
+		while (_isAnimating) { yield return true; }
 		while (_gMonsterHealth > 0)
 		{
 			_actionButtons[3].OnInteract();
 			yield return new WaitForSeconds(0.1f);
 		}
 		_actionButtons[5].OnInteract();
-		while (_isAnimating) { yield return true; yield return new WaitForSeconds(0.1f); }
+		while (_isAnimating) { yield return true; }
 		GetComponent<KMSelectable>().Children[63].OnInteract();
 	}
 }
