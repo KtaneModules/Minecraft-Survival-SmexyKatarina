@@ -82,6 +82,7 @@ public class MinecraftSurvival : MonoBehaviour
 	bool _inInventory = false;
 	bool _fightReset = false;
 	bool _dragonDefeated = false;
+    bool _startedModule = false;
 
 	void Awake()
 	{
@@ -251,6 +252,8 @@ public class MinecraftSurvival : MonoBehaviour
 					Debug.LogFormat("[Minecraft Survival #{0}] Honestly though, how did you manage that?", _modID);
 					break;
 				}
+                if (!_startedModule)
+                    _startedModule = true;
 				if (_materialValues[42] >= 64 || _materialValues[42] + 2 >= 64) { _materialValues[42] = 64; UpdateText(42); break; }
 				int rnd2 = rand.Range(0, 4);
 				if (rnd2 == 0)
@@ -2257,14 +2260,14 @@ public class MinecraftSurvival : MonoBehaviour
 
 	//twitch plays
 	#pragma warning disable 414
-	private readonly string TwitchHelpMessage = @"!{0} inventory/inv [Toggles being in and out of the inventory] | !{0} amount/amt <item> [See the amount of the specified item in the inventory] | !{0} craft (#) <item> [Crafts the specified item in the inventory (optionally '#' times)] | !{0} dimension/dim <dimension> [Changes to the specified dimension] | !{0} gather (#) <item> [Gathers the specified item (optionally '#' times)] | !{0} eat [Eats a cooked beef] | !{0} attack (#) [Attacks a mob in a fight (optionally '#' times)] | !{0} items [Gives a list of typical items you'd use] | !{0} dragon [Enter the Ender Dragon battle] | !{0} egg [Clicks the dragon egg in the inventory]";
+	private readonly string TwitchHelpMessage = @"!{0} inventory/inv [Toggles being in and out of the inventory] | !{0} amount/amt <item> [See the amount of the specified item in the inventory] | !{0} craft (#) <item> [Crafts the specified item in the inventory (optionally '#' times)] | !{0} dimension/dim <dimension> [Changes to the specified dimension] | !{0} gather (#) <item> [Gathers the specified item (optionally '#' times)] | !{0} eat [Eats a cooked beef] | !{0} attack (#) [Attacks a mob in a fight (optionally '#' times)] | !{0} items [Gives a list of all gatherable and craftable items] | !{0} dragon [Enter the Ender Dragon battle] | !{0} egg [Clicks the dragon egg in the inventory]";
 	#pragma warning restore 414
 	IEnumerator ProcessTwitchCommand(string command)
 	{
 		if (Regex.IsMatch(command, @"^\s*items\s*$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)) 
 		{
-			yield return "sendtochat The possible gatherable items to be used are " + _resourceButtons.Select(x => x.name).Join(", ") + ".";
-			yield return "sendtochat The possible craftable items to be used are " + _inventoryButtons.Select(x => x.name).Join(", ") + ".";
+			yield return "sendtochat The possible gatherable items are " + _resourceButtons.Select(x => x.name).Distinct().Join(", ") + ".";
+			yield return "sendtochat The possible craftable items are " + _inventoryButtons.Select(x => x.name).Join(", ") + ".";
 			yield break;
 		}
 		if (Regex.IsMatch(command, @"^\s*egg\s*$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant))
@@ -2373,7 +2376,7 @@ public class MinecraftSurvival : MonoBehaviour
                     int temp = 0;
                     if (!int.TryParse(parameters[1], out temp))
                     {
-                        yield return "sendtochaterror The specified number of times to attack '" + parameters[1] + "' is invalid!";
+                        yield return "sendtochaterror!f The specified number of times to attack '" + parameters[1] + "' is invalid!";
                         yield break;
                     }
                     if (temp < 1)
@@ -2439,7 +2442,7 @@ public class MinecraftSurvival : MonoBehaviour
 							yield break;
 						}
 					}
-					yield return "sendtochaterror The specified item '" + origitem + "' does not exist!";
+					yield return "sendtochaterror!f The specified item '" + origitem + "' does not exist!";
 				}
 			}
 			yield break;
@@ -2509,7 +2512,7 @@ public class MinecraftSurvival : MonoBehaviour
 							yield break;
 						}
 					}
-					yield return "sendtochaterror The specified item '" + origitem + "' does not exist!";
+					yield return "sendtochaterror!f The specified item '" + origitem + "' does not exist!";
 				}
 			}
 			yield break;
@@ -2614,7 +2617,7 @@ public class MinecraftSurvival : MonoBehaviour
 							yield break;
 						}
 					}
-					yield return "sendtochaterror The specified item '" + origitem + "' does not exist!";
+					yield return "sendtochaterror!f The specified item '" + origitem + "' does not exist!";
 				}
 			}
 			yield break;
@@ -2657,7 +2660,7 @@ public class MinecraftSurvival : MonoBehaviour
 						_actionButtons[Array.IndexOf(dimensions, dim)].OnInteract();
 						yield break;
 					}
-					yield return "sendtochaterror The specified dimension '" + origdim + "' does not exist!";
+					yield return "sendtochaterror!f The specified dimension '" + origdim + "' does not exist!";
 				}
 			}
 			yield break;
@@ -2666,193 +2669,138 @@ public class MinecraftSurvival : MonoBehaviour
 
 	IEnumerator TwitchHandleForcedSolve()
 	{
-		for (int i = 0; i < 2; i++)
-		{
-			_resourceButtons[0].OnInteract();
-			yield return new WaitForSeconds(0.1f);
-		}
-		_actionButtons[5].OnInteract();
-		while (_isAnimating) { yield return true; }
-		for (int i = 0; i < 3; i++)
-		{
-			_inventoryButtons[0].OnInteract();
-			yield return new WaitForSeconds(0.1f);
-		}
-		for (int i = 0; i < 2; i++)
-		{
-			_inventoryButtons[1].OnInteract();
-			yield return new WaitForSeconds(0.1f);
-		}
-		_inventoryButtons[5].OnInteract();
-		yield return new WaitForSeconds(0.1f);
-		_inventoryButtons[10].OnInteract();
-		yield return new WaitForSeconds(0.1f);
-		_actionButtons[5].OnInteract();
-		while (_isAnimating) { yield return true; }
-		while (_materialValues[19] < 16)
-		{
-			if (_playerHunger == 1)
-			{
-				_actionButtons[6].OnInteract();
-				yield return new WaitForSeconds(0.1f);
-			}
-			_resourceButtons[1].OnInteract();
-			yield return new WaitForSeconds(0.1f);
-		}
-		if (_playerHunger == 1)
-		{
-			_actionButtons[6].OnInteract();
-			yield return new WaitForSeconds(0.1f);
-		}
-		_resourceButtons[5].OnInteract();
-		yield return new WaitForSeconds(0.1f);
-		while (_materialValues[20] < 15)
-		{
-			if (_playerHunger == 1)
-			{
-				_actionButtons[6].OnInteract();
-				yield return new WaitForSeconds(0.1f);
-			}
-			_resourceButtons[2].OnInteract();
-			yield return new WaitForSeconds(0.1f);
-		}
-		_actionButtons[5].OnInteract();
-		while (_isAnimating) { yield return true; }
-		_inventoryButtons[2].OnInteract();
-		yield return new WaitForSeconds(0.1f);
-		_inventoryButtons[6].OnInteract();
-		yield return new WaitForSeconds(0.1f);
-		_actionButtons[5].OnInteract();
-		while (_isAnimating) { yield return true; }
-		while (_materialValues[21] < 11)
-		{
-			if (_playerHunger == 1)
-			{
-				_actionButtons[6].OnInteract();
-				yield return new WaitForSeconds(0.1f);
-			}
-			_resourceButtons[3].OnInteract();
-			yield return new WaitForSeconds(0.1f);
-		}
-		_actionButtons[5].OnInteract();
-		while (_isAnimating) { yield return true; }
-		while (_materialValues[3] < 11)
-		{
-			_inventoryButtons[3].OnInteract();
-			yield return new WaitForSeconds(0.1f);
-		}
-		_inventoryButtons[7].OnInteract();
-		yield return new WaitForSeconds(0.1f);
-		_inventoryButtons[19].OnInteract();
-		yield return new WaitForSeconds(0.1f);
-		_actionButtons[5].OnInteract();
-		while (_isAnimating) { yield return true; }
-		while (_materialValues[22] < 36)
-		{
-			if (_playerHunger == 1)
-			{
-				_actionButtons[6].OnInteract();
-				yield return new WaitForSeconds(0.1f);
-			}
-			_resourceButtons[4].OnInteract();
-			yield return new WaitForSeconds(0.1f);
-		}
-		_actionButtons[5].OnInteract();
-		while (_isAnimating) { yield return true; }
-		_inventoryButtons[8].OnInteract();
-		yield return new WaitForSeconds(0.1f);
-		_inventoryButtons[16].OnInteract();
-		yield return new WaitForSeconds(0.1f);
-		_inventoryButtons[11].OnInteract();
-		yield return new WaitForSeconds(0.1f);
-		_inventoryButtons[12].OnInteract();
-		yield return new WaitForSeconds(0.1f);
-		_inventoryButtons[13].OnInteract();
-		yield return new WaitForSeconds(0.1f);
-		_inventoryButtons[14].OnInteract();
-		yield return new WaitForSeconds(0.1f);
-		_actionButtons[5].OnInteract();
-		while (_isAnimating) { yield return true; }
-		while (_materialValues[24] < 10)
-		{
-			if (_playerHunger == 1)
-			{
-				if (_materialValues[4] == 0)
-				{
-					_actionButtons[5].OnInteract();
-					while (_isAnimating) { yield return true; }
-					_inventoryButtons[4].OnInteract();
-					yield return new WaitForSeconds(0.1f);
-					_actionButtons[5].OnInteract();
-					while (_isAnimating) { yield return true; }
-				}
-				_actionButtons[6].OnInteract();
-				yield return new WaitForSeconds(0.1f);
-			}
-			_resourceButtons[7].OnInteract();
-			yield return new WaitForSeconds(0.1f);
-			if (_fightStarted)
-			{
-                _resourceButtons[7].OnHighlightEnded();
+        if (!_startedModule)
+        {
+            if (_inInventory)
+            {
+                _actionButtons[5].OnInteract();
                 while (_isAnimating) { yield return true; }
-				while (_gMonsterHealth > 0)
-				{
-					_actionButtons[3].OnInteract();
-					yield return new WaitForSeconds(0.1f);
-				}
-			}
-		}
-		_actionButtons[5].OnInteract();
-		while (_isAnimating) { yield return true; }
-		while (_materialValues[4] < 10)
-		{
-			_inventoryButtons[4].OnInteract();
-			yield return new WaitForSeconds(0.1f);
-		}
-		_actionButtons[5].OnInteract();
-		while (_isAnimating) { yield return true; }
-		while (_materialValues[25] < 14)
-		{
-			if (_playerHunger == 1)
-			{
-				_actionButtons[6].OnInteract();
-				yield return new WaitForSeconds(0.1f);
-			}
-			_resourceButtons[6].OnInteract();
-			yield return new WaitForSeconds(0.1f);
-			if (_fightStarted)
-			{
-                _resourceButtons[6].OnHighlightEnded();
-                while (_isAnimating) { yield return true; }
-				while (_gMonsterHealth > 0)
-				{
-					_actionButtons[3].OnInteract();
-					yield return new WaitForSeconds(0.1f);
-				}
-			}
-		}
-		_actionButtons[1].OnInteract();
-		yield return new WaitForSeconds(0.1f);
-		while (_materialValues[32] < 6 || _materialValues[33] < 12)
-		{
-			if (_materialValues[4] == 1)
-			{
-				_actionButtons[0].OnInteract();
-				yield return new WaitForSeconds(0.1f);
-				_resourceButtons[2].OnInteract();
-				yield return new WaitForSeconds(0.1f);
-				if (_fightStarted)
-				{
-                    _resourceButtons[2].OnHighlightEnded();
-                    while (_isAnimating) { yield return true; }
-					while (_gMonsterHealth > 0)
-					{
-						_actionButtons[3].OnInteract();
-						yield return new WaitForSeconds(0.1f);
-					}
-				}
-				_resourceButtons[7].OnInteract();
-				yield return new WaitForSeconds(0.1f);
+            }
+            for (int i = 0; i < 2; i++)
+            {
+                _resourceButtons[0].OnInteract();
+                yield return new WaitForSeconds(0.1f);
+            }
+            _actionButtons[5].OnInteract();
+            while (_isAnimating) { yield return true; }
+            for (int i = 0; i < 3; i++)
+            {
+                _inventoryButtons[0].OnInteract();
+                yield return new WaitForSeconds(0.1f);
+            }
+            for (int i = 0; i < 2; i++)
+            {
+                _inventoryButtons[1].OnInteract();
+                yield return new WaitForSeconds(0.1f);
+            }
+            _inventoryButtons[5].OnInteract();
+            yield return new WaitForSeconds(0.1f);
+            _inventoryButtons[10].OnInteract();
+            yield return new WaitForSeconds(0.1f);
+            _actionButtons[5].OnInteract();
+            while (_isAnimating) { yield return true; }
+            while (_materialValues[19] < 16)
+            {
+                if (_playerHunger == 1)
+                {
+                    _actionButtons[6].OnInteract();
+                    yield return new WaitForSeconds(0.1f);
+                }
+                _resourceButtons[1].OnInteract();
+                yield return new WaitForSeconds(0.1f);
+            }
+            if (_playerHunger == 1)
+            {
+                _actionButtons[6].OnInteract();
+                yield return new WaitForSeconds(0.1f);
+            }
+            _resourceButtons[5].OnInteract();
+            yield return new WaitForSeconds(0.1f);
+            while (_materialValues[20] < 15)
+            {
+                if (_playerHunger == 1)
+                {
+                    _actionButtons[6].OnInteract();
+                    yield return new WaitForSeconds(0.1f);
+                }
+                _resourceButtons[2].OnInteract();
+                yield return new WaitForSeconds(0.1f);
+            }
+            _actionButtons[5].OnInteract();
+            while (_isAnimating) { yield return true; }
+            _inventoryButtons[2].OnInteract();
+            yield return new WaitForSeconds(0.1f);
+            _inventoryButtons[6].OnInteract();
+            yield return new WaitForSeconds(0.1f);
+            _actionButtons[5].OnInteract();
+            while (_isAnimating) { yield return true; }
+            while (_materialValues[21] < 11)
+            {
+                if (_playerHunger == 1)
+                {
+                    _actionButtons[6].OnInteract();
+                    yield return new WaitForSeconds(0.1f);
+                }
+                _resourceButtons[3].OnInteract();
+                yield return new WaitForSeconds(0.1f);
+            }
+            _actionButtons[5].OnInteract();
+            while (_isAnimating) { yield return true; }
+            while (_materialValues[3] < 11)
+            {
+                _inventoryButtons[3].OnInteract();
+                yield return new WaitForSeconds(0.1f);
+            }
+            _inventoryButtons[7].OnInteract();
+            yield return new WaitForSeconds(0.1f);
+            _inventoryButtons[19].OnInteract();
+            yield return new WaitForSeconds(0.1f);
+            _actionButtons[5].OnInteract();
+            while (_isAnimating) { yield return true; }
+            while (_materialValues[22] < 36)
+            {
+                if (_playerHunger == 1)
+                {
+                    _actionButtons[6].OnInteract();
+                    yield return new WaitForSeconds(0.1f);
+                }
+                _resourceButtons[4].OnInteract();
+                yield return new WaitForSeconds(0.1f);
+            }
+            _actionButtons[5].OnInteract();
+            while (_isAnimating) { yield return true; }
+            _inventoryButtons[8].OnInteract();
+            yield return new WaitForSeconds(0.1f);
+            _inventoryButtons[16].OnInteract();
+            yield return new WaitForSeconds(0.1f);
+            _inventoryButtons[11].OnInteract();
+            yield return new WaitForSeconds(0.1f);
+            _inventoryButtons[12].OnInteract();
+            yield return new WaitForSeconds(0.1f);
+            _inventoryButtons[13].OnInteract();
+            yield return new WaitForSeconds(0.1f);
+            _inventoryButtons[14].OnInteract();
+            yield return new WaitForSeconds(0.1f);
+            _actionButtons[5].OnInteract();
+            while (_isAnimating) { yield return true; }
+            while (_materialValues[24] < 10)
+            {
+                if (_playerHunger == 1)
+                {
+                    if (_materialValues[4] == 0)
+                    {
+                        _actionButtons[5].OnInteract();
+                        while (_isAnimating) { yield return true; }
+                        _inventoryButtons[4].OnInteract();
+                        yield return new WaitForSeconds(0.1f);
+                        _actionButtons[5].OnInteract();
+                        while (_isAnimating) { yield return true; }
+                    }
+                    _actionButtons[6].OnInteract();
+                    yield return new WaitForSeconds(0.1f);
+                }
+                _resourceButtons[7].OnInteract();
+                yield return new WaitForSeconds(0.1f);
                 if (_fightStarted)
                 {
                     _resourceButtons[7].OnHighlightEnded();
@@ -2863,88 +2811,156 @@ public class MinecraftSurvival : MonoBehaviour
                         yield return new WaitForSeconds(0.1f);
                     }
                 }
-                _actionButtons[5].OnInteract();
-				while (_isAnimating) { yield return true; }
-				_inventoryButtons[4].OnInteract();
-				yield return new WaitForSeconds(0.1f);
-				_actionButtons[5].OnInteract();
-				while (_isAnimating) { yield return true; }
-				_actionButtons[1].OnInteract();
-				yield return new WaitForSeconds(0.1f);
-			}
-			if (_playerHunger == 1)
-			{
-				_actionButtons[6].OnInteract();
-				yield return new WaitForSeconds(0.1f);
-			}
-            int lastpress = 0;
-			if (_materialValues[34] < 63)
-			{
-                lastpress = 8;
-                _resourceButtons[8].OnInteract();
-				yield return new WaitForSeconds(0.1f);
-			}
-			else if (_materialValues[26] < 63)
-			{
-                lastpress = 9;
-                _resourceButtons[9].OnInteract();
-				yield return new WaitForSeconds(0.1f);
-			}
-			else if (_materialValues[27] < 63)
-			{
-                lastpress = 10;
-                _resourceButtons[10].OnInteract();
-				yield return new WaitForSeconds(0.1f);
-			}
-			else if (_materialValues[28] < 63)
-			{
-                lastpress = 11;
-                _resourceButtons[11].OnInteract();
-				yield return new WaitForSeconds(0.1f);
-			}
-			else
-			{
-                lastpress = rand.Range(8, 12);
-                _resourceButtons[lastpress].OnInteract();
-				yield return new WaitForSeconds(0.1f);
-			}
-			if (_fightStarted)
-			{
-                _resourceButtons[lastpress].OnHighlightEnded();
-                while (_isAnimating) { yield return true; }
-				while (_gMonsterHealth > 0)
-				{
-					_actionButtons[3].OnInteract();
-					yield return new WaitForSeconds(0.1f);
-				}
-			}
-		}
-		_actionButtons[5].OnInteract();
-		while (_isAnimating) { yield return true; }
-		for (int i = 0; i < 6; i++)
-		{
-			_inventoryButtons[17].OnInteract();
-			yield return new WaitForSeconds(0.1f);
-		}
-		for (int i = 0; i < 12; i++)
-		{
-			_inventoryButtons[18].OnInteract();
-			yield return new WaitForSeconds(0.1f);
-		}
-		_actionButtons[5].OnInteract();
-		while (_isAnimating) { yield return true; }
-		_actionButtons[2].OnInteract();
-		yield return new WaitForSeconds(0.1f);
-		_actionButtons[7].OnInteract();
-		yield return new WaitForSeconds(0.1f);
-		while (_isAnimating) { yield return true; }
-		while (_gMonsterHealth > 0)
-		{
-			_actionButtons[3].OnInteract();
-			yield return new WaitForSeconds(0.1f);
-		}
-		_actionButtons[5].OnInteract();
-		while (_isAnimating) { yield return true; }
-		GetComponent<KMSelectable>().Children[63].OnInteract();
-	}
+            }
+            _actionButtons[5].OnInteract();
+            while (_isAnimating) { yield return true; }
+            while (_materialValues[4] < 10)
+            {
+                _inventoryButtons[4].OnInteract();
+                yield return new WaitForSeconds(0.1f);
+            }
+            _actionButtons[5].OnInteract();
+            while (_isAnimating) { yield return true; }
+            while (_materialValues[25] < 14)
+            {
+                if (_playerHunger == 1)
+                {
+                    _actionButtons[6].OnInteract();
+                    yield return new WaitForSeconds(0.1f);
+                }
+                _resourceButtons[6].OnInteract();
+                yield return new WaitForSeconds(0.1f);
+                if (_fightStarted)
+                {
+                    _resourceButtons[6].OnHighlightEnded();
+                    while (_isAnimating) { yield return true; }
+                    while (_gMonsterHealth > 0)
+                    {
+                        _actionButtons[3].OnInteract();
+                        yield return new WaitForSeconds(0.1f);
+                    }
+                }
+            }
+            _actionButtons[1].OnInteract();
+            yield return new WaitForSeconds(0.1f);
+            while (_materialValues[32] < 6 || _materialValues[33] < 12)
+            {
+                if (_materialValues[4] == 1)
+                {
+                    _actionButtons[0].OnInteract();
+                    yield return new WaitForSeconds(0.1f);
+                    _resourceButtons[2].OnInteract();
+                    yield return new WaitForSeconds(0.1f);
+                    if (_fightStarted)
+                    {
+                        _resourceButtons[2].OnHighlightEnded();
+                        while (_isAnimating) { yield return true; }
+                        while (_gMonsterHealth > 0)
+                        {
+                            _actionButtons[3].OnInteract();
+                            yield return new WaitForSeconds(0.1f);
+                        }
+                    }
+                    _resourceButtons[7].OnInteract();
+                    yield return new WaitForSeconds(0.1f);
+                    if (_fightStarted)
+                    {
+                        _resourceButtons[7].OnHighlightEnded();
+                        while (_isAnimating) { yield return true; }
+                        while (_gMonsterHealth > 0)
+                        {
+                            _actionButtons[3].OnInteract();
+                            yield return new WaitForSeconds(0.1f);
+                        }
+                    }
+                    _actionButtons[5].OnInteract();
+                    while (_isAnimating) { yield return true; }
+                    _inventoryButtons[4].OnInteract();
+                    yield return new WaitForSeconds(0.1f);
+                    _actionButtons[5].OnInteract();
+                    while (_isAnimating) { yield return true; }
+                    _actionButtons[1].OnInteract();
+                    yield return new WaitForSeconds(0.1f);
+                }
+                if (_playerHunger == 1)
+                {
+                    _actionButtons[6].OnInteract();
+                    yield return new WaitForSeconds(0.1f);
+                }
+                int lastpress = 0;
+                if (_materialValues[34] < 63)
+                {
+                    lastpress = 8;
+                    _resourceButtons[8].OnInteract();
+                    yield return new WaitForSeconds(0.1f);
+                }
+                else if (_materialValues[26] < 63)
+                {
+                    lastpress = 9;
+                    _resourceButtons[9].OnInteract();
+                    yield return new WaitForSeconds(0.1f);
+                }
+                else if (_materialValues[27] < 63)
+                {
+                    lastpress = 10;
+                    _resourceButtons[10].OnInteract();
+                    yield return new WaitForSeconds(0.1f);
+                }
+                else if (_materialValues[28] < 63)
+                {
+                    lastpress = 11;
+                    _resourceButtons[11].OnInteract();
+                    yield return new WaitForSeconds(0.1f);
+                }
+                else
+                {
+                    lastpress = rand.Range(8, 12);
+                    _resourceButtons[lastpress].OnInteract();
+                    yield return new WaitForSeconds(0.1f);
+                }
+                if (_fightStarted)
+                {
+                    _resourceButtons[lastpress].OnHighlightEnded();
+                    while (_isAnimating) { yield return true; }
+                    while (_gMonsterHealth > 0)
+                    {
+                        _actionButtons[3].OnInteract();
+                        yield return new WaitForSeconds(0.1f);
+                    }
+                }
+            }
+            _actionButtons[5].OnInteract();
+            while (_isAnimating) { yield return true; }
+            for (int i = 0; i < 6; i++)
+            {
+                _inventoryButtons[17].OnInteract();
+                yield return new WaitForSeconds(0.1f);
+            }
+            for (int i = 0; i < 12; i++)
+            {
+                _inventoryButtons[18].OnInteract();
+                yield return new WaitForSeconds(0.1f);
+            }
+            _actionButtons[5].OnInteract();
+            while (_isAnimating) { yield return true; }
+            _actionButtons[2].OnInteract();
+            yield return new WaitForSeconds(0.1f);
+            _actionButtons[7].OnInteract();
+            yield return new WaitForSeconds(0.1f);
+            while (_isAnimating) { yield return true; }
+            while (_gMonsterHealth > 0)
+            {
+                _actionButtons[3].OnInteract();
+                yield return new WaitForSeconds(0.1f);
+            }
+            _actionButtons[5].OnInteract();
+            while (_isAnimating) { yield return true; }
+            GetComponent<KMSelectable>().Children[63].OnInteract();
+        }
+        else
+        {
+            SolveModule();
+            GetComponent<KMBombModule>().HandlePass();
+        }
+    }
 }
