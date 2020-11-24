@@ -1334,6 +1334,7 @@ public class MinecraftSurvival : MonoBehaviour
 		}
 		if (_playerProc == 0)
 		{
+			Debug.Log(_materialValues[16]);
 			if (_materialValues[16] >= 1)
 			{
 				_playerProc = _armorProc[1];
@@ -1359,6 +1360,8 @@ public class MinecraftSurvival : MonoBehaviour
             _fightStarted = false;
             _mobIndicator.enabled = false;
 			_mobHealthIndicator.text = "";
+			_playerProc = 0;
+			_playerDamage = -1;
 			UpdateModule();
 			_materialValues[41]++;
 			return;
@@ -1370,6 +1373,8 @@ public class MinecraftSurvival : MonoBehaviour
             _resourceUntilFight = rand.Range(6, 13);
             _mobIndicator.enabled = false;
 			_mobHealthIndicator.text = "";
+			_playerProc = 0;
+			_playerDamage = -1;
 			UpdateModule();
 			int drop = GiveMobDrop();
 			Debug.LogFormat("[Minecraft Survival #{0}] The monster has been defeated. It dropped {1}. Resume gathering! Number of resources gathered till next fight: {2}.", _modID, drop > 1 ? drop + " items" : "an item", _resourceUntilFight);
@@ -1388,6 +1393,8 @@ public class MinecraftSurvival : MonoBehaviour
 				_resourceUntilFight = rand.Range(6, 13);
                 _mobIndicator.enabled = false;
 				_mobHealthIndicator.text = "";
+				_playerProc = 0;
+				_playerDamage = -1;
 				UpdateModule();
 				Debug.LogFormat("[Minecraft Survival #{0}] You died by a {1}. Strike!", _modID, _gMonsterName);
 				GetComponent<KMBombModule>().HandleStrike();
@@ -1414,7 +1421,9 @@ public class MinecraftSurvival : MonoBehaviour
 				_resourceUntilFight = rand.Range(6, 13);
                 _mobIndicator.enabled = false;
 				_mobHealthIndicator.text = "";
-                UpdateModule();
+				_playerProc = 0;
+				_playerDamage = -1;
+				UpdateModule();
 				Debug.LogFormat("[Minecraft Survival #{0}] You died by a {1}. Strike!", _modID, _gMonsterName);
 				GetComponent<KMBombModule>().HandleStrike();
 				return;
@@ -1440,7 +1449,9 @@ public class MinecraftSurvival : MonoBehaviour
 				_resourceUntilFight = rand.Range(6, 13);
                 _mobIndicator.enabled = false;
 				_mobHealthIndicator.text = "";
-                UpdateModule();
+				_playerProc = 0;
+				_playerDamage = -1;
+				UpdateModule();
 				Debug.LogFormat("[Minecraft Survival #{0}] A Creeper blew you up. You died, aw man. Strike!", _modID);
 				GetComponent<KMBombModule>().HandleStrike();
 				return;
