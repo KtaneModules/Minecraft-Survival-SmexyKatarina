@@ -2426,7 +2426,7 @@ public class MinecraftSurvival : MonoBehaviour
 				{
 					string origitem = "";
 					string item = "";
-					if (parameters[0] == "amt")
+					if (parameters[0].ToLowerInvariant() == "amt")
 						item = command.Substring(4);
 					else
 						item = command.Substring(7);
@@ -2568,6 +2568,8 @@ public class MinecraftSurvival : MonoBehaviour
 							item = "diamonds";
 						else if (item.Equals("gravel"))
 							item = "flint";
+						else if (item.Equals("glowstone"))
+							item = "glowstone dust";
 						if (item.Equals(GetResourceName(i).ToLower()))
 						{
 							for (int j = 0; j < _resourceButtons.Length; j++)
@@ -2578,6 +2580,8 @@ public class MinecraftSurvival : MonoBehaviour
 									item = "diamond ore";
 								else if (item.Equals("flint"))
 									item = "gravel";
+								else if (item.Equals("glowstone dust"))
+									item = "glowstone";
 								if (item.Equals(_resourceButtons[j].name.ToLower()))
 								{
 									if (j == 6 && _dimensionIndex == 2)
