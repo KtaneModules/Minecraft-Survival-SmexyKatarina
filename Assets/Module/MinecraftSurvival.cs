@@ -2491,6 +2491,11 @@ public class MinecraftSurvival : MonoBehaviour
 							yield return "sendtochaterror The specified number of times to craft '" + temp + "' is less than 1!";
 							yield break;
 						}
+						if (6 + ("" + temp).Length == command.Length) 
+						{
+							yield return "sendtochaterror Please specify the item you wish to craft!";
+							yield break;
+						}
 						origitem = command.Substring(7 + ("" + temp).Length);
 						item = command.Substring(7 + ("" + temp).Length);
 					}
@@ -2559,6 +2564,11 @@ public class MinecraftSurvival : MonoBehaviour
 						if (temp < 0)
 						{
 							yield return "sendtochaterror The specified number of times to gather '" + temp + "' is less than 1!";
+							yield break;
+						}
+						if (7 + ("" + temp).Length == command.Length)
+						{
+							yield return "sendtochaterror Please specify the item you wish to gather!";
 							yield break;
 						}
 						origitem = command.Substring(8 + ("" + temp).Length);
