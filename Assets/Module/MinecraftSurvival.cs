@@ -212,7 +212,7 @@ public class MinecraftSurvival : MonoBehaviour
 				UpdateText(4);
 				break;
 			case 7:
-				if (!_dragonDefeated)
+				if (!_dragonDefeated && !_dragonFightStarted)
 				{
 					StartTheDamnDragonFightAlready();
 				}
@@ -1395,6 +1395,7 @@ public class MinecraftSurvival : MonoBehaviour
 				_mobHealthIndicator.text = "";
 				_playerProc = 0;
 				_playerDamage = -1;
+				_dragonFightStarted = false;
 				UpdateModule();
 				Debug.LogFormat("[Minecraft Survival #{0}] You died by a {1}. Strike!", _modID, _gMonsterName);
 				GetComponent<KMBombModule>().HandleStrike();
@@ -2268,9 +2269,10 @@ public class MinecraftSurvival : MonoBehaviour
 		_playerHunger = 10;
 		yield break;
 	}
+	}
 
 	//twitch plays
-	#pragma warning disable 414
+#pragma warning disable 414
 	private readonly string TwitchHelpMessage = @"!{0} inventory/inv [Toggles being in and out of the inventory] | !{0} amount/amt <item> [See the amount of the specified item in the inventory] | !{0} craft (#) <item> [Crafts the specified item in the inventory (optionally '#' times)] | !{0} dimension/dim <dimension> [Changes to the specified dimension] | !{0} gather (#) <item> [Gathers the specified item (optionally '#' times)] | !{0} eat [Eats a cooked beef] | !{0} attack (#) [Attacks a mob in a fight (optionally '#' times)] | !{0} items [Gives a list of all gatherable and craftable items] | !{0} dragon [Enter the Ender Dragon battle] | !{0} egg [Clicks the dragon egg in the inventory]";
 	#pragma warning restore 414
 	IEnumerator ProcessTwitchCommand(string command)
