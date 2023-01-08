@@ -2817,11 +2817,11 @@ public class MinecraftSurvival : MonoBehaviour
                     {
                         _actionButtons[3].OnInteract();
                         yield return new WaitForSeconds(0.1f);
-						if (_gMonsterIndex == 3 && _playerHealth < 12 && _materialValues[4] > 0)
+                        if (_gMonsterIndex == 3 && _playerHealth < 12 && _materialValues[4] > 0)
                         {
-							_actionButtons[4].OnInteract();
-							yield return new WaitForSeconds(0.1f);
-						}
+                            _actionButtons[4].OnInteract();
+                            yield return new WaitForSeconds(0.1f);
+                        }
                     }
                 }
             }
@@ -2843,12 +2843,12 @@ public class MinecraftSurvival : MonoBehaviour
                     {
                         _actionButtons[3].OnInteract();
                         yield return new WaitForSeconds(0.1f);
-						if (_gMonsterIndex == 3 && _playerHealth < 12 && _materialValues[4] > 0)
-						{
-							_actionButtons[4].OnInteract();
-							yield return new WaitForSeconds(0.1f);
-						}
-					}
+                        if (_gMonsterIndex == 3 && _playerHealth < 12 && _materialValues[4] > 0)
+                        {
+                            _actionButtons[4].OnInteract();
+                            yield return new WaitForSeconds(0.1f);
+                        }
+                    }
                 }
             }
             _actionButtons[5].OnInteract();
@@ -2877,12 +2877,12 @@ public class MinecraftSurvival : MonoBehaviour
                 {
                     _actionButtons[3].OnInteract();
                     yield return new WaitForSeconds(0.1f);
-					if (_gMonsterIndex == 3 && _playerHealth < 12 && _materialValues[4] > 0)
-					{
-						_actionButtons[4].OnInteract();
-						yield return new WaitForSeconds(0.1f);
-					}
-				}
+                    if (_gMonsterIndex == 3 && _playerHealth < 12 && _materialValues[4] > 0)
+                    {
+                        _actionButtons[4].OnInteract();
+                        yield return new WaitForSeconds(0.1f);
+                    }
+                }
             }
             // Gather a minimum of 4x Cobblestone
             while (_materialValues[19] < 4)
@@ -2902,12 +2902,12 @@ public class MinecraftSurvival : MonoBehaviour
                     {
                         _actionButtons[3].OnInteract();
                         yield return new WaitForSeconds(0.1f);
-						if (_gMonsterIndex == 3 && _playerHealth < 12 && _materialValues[4] > 0)
-						{
-							_actionButtons[4].OnInteract();
-							yield return new WaitForSeconds(0.1f);
-						}
-					}
+                        if (_gMonsterIndex == 3 && _playerHealth < 12 && _materialValues[4] > 0)
+                        {
+                            _actionButtons[4].OnInteract();
+                            yield return new WaitForSeconds(0.1f);
+                        }
+                    }
                 }
             }
             // Gather a minimum of 6x Coal
@@ -2928,12 +2928,12 @@ public class MinecraftSurvival : MonoBehaviour
                     {
                         _actionButtons[3].OnInteract();
                         yield return new WaitForSeconds(0.1f);
-						if (_gMonsterIndex == 3 && _playerHealth < 12 && _materialValues[4] > 0)
-						{
-							_actionButtons[4].OnInteract();
-							yield return new WaitForSeconds(0.1f);
-						}
-					}
+                        if (_gMonsterIndex == 3 && _playerHealth < 12 && _materialValues[4] > 0)
+                        {
+                            _actionButtons[4].OnInteract();
+                            yield return new WaitForSeconds(0.1f);
+                        }
+                    }
                 }
             }
             // Gather a minimum of 6x Iron Ore
@@ -2954,12 +2954,12 @@ public class MinecraftSurvival : MonoBehaviour
                     {
                         _actionButtons[3].OnInteract();
                         yield return new WaitForSeconds(0.1f);
-						if (_gMonsterIndex == 3 && _playerHealth < 12 && _materialValues[4] > 0)
-						{
-							_actionButtons[4].OnInteract();
-							yield return new WaitForSeconds(0.1f);
-						}
-					}
+                        if (_gMonsterIndex == 3 && _playerHealth < 12 && _materialValues[4] > 0)
+                        {
+                            _actionButtons[4].OnInteract();
+                            yield return new WaitForSeconds(0.1f);
+                        }
+                    }
                 }
             }
             // Gather a minimum of 12x Diamond
@@ -2980,12 +2980,12 @@ public class MinecraftSurvival : MonoBehaviour
                     {
                         _actionButtons[3].OnInteract();
                         yield return new WaitForSeconds(0.1f);
-						if (_gMonsterIndex == 3 && _playerHealth < 12 && _materialValues[4] > 0)
-						{
-							_actionButtons[4].OnInteract();
-							yield return new WaitForSeconds(0.1f);
-						}
-					}
+                        if (_gMonsterIndex == 3 && _playerHealth < 12 && _materialValues[4] > 0)
+                        {
+                            _actionButtons[4].OnInteract();
+                            yield return new WaitForSeconds(0.1f);
+                        }
+                    }
                 }
             }
             _actionButtons[5].OnInteract();
