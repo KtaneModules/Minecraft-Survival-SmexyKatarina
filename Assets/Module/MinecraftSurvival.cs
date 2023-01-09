@@ -2269,10 +2269,9 @@ public class MinecraftSurvival : MonoBehaviour
 		_playerHunger = 10;
 		yield break;
 	}
-	}
 
 	//twitch plays
-#pragma warning disable 414
+	#pragma warning disable 414
 	private readonly string TwitchHelpMessage = @"!{0} inventory/inv [Toggles being in and out of the inventory] | !{0} amount/amt <item> [See the amount of the specified item in the inventory] | !{0} craft (#) <item> [Crafts the specified item in the inventory (optionally '#' times)] | !{0} dimension/dim <dimension> [Changes to the specified dimension] | !{0} gather (#) <item> [Gathers the specified item (optionally '#' times)] | !{0} eat [Eats a cooked beef] | !{0} attack (#) [Attacks a mob in a fight (optionally '#' times)] | !{0} items [Gives a list of all gatherable and craftable items] | !{0} dragon [Enter the Ender Dragon battle] | !{0} egg [Clicks the dragon egg in the inventory]";
 	#pragma warning restore 414
 	IEnumerator ProcessTwitchCommand(string command)
@@ -2694,39 +2693,37 @@ public class MinecraftSurvival : MonoBehaviour
 		}
 	}
 
-	IEnumerator TwitchHandleForcedSolve()
-	{
+    IEnumerator TwitchHandleForcedSolve()
+    {
         if (!_startedModule)
         {
+            while (_isAnimating) { yield return true; }
             if (_inInventory)
             {
                 _actionButtons[5].OnInteract();
                 while (_isAnimating) { yield return true; }
             }
-            for (int i = 0; i < 2; i++)
-            {
-                _resourceButtons[0].OnInteract();
-                yield return new WaitForSeconds(0.1f);
-            }
+            // Gather 2x Log
+            _resourceButtons[0].OnInteract();
+            yield return new WaitForSeconds(0.1f);
             _actionButtons[5].OnInteract();
             while (_isAnimating) { yield return true; }
-            for (int i = 0; i < 3; i++)
+            // 2x Log -> 8x Wooden Planks 
+            for (int i = 0; i < 2; i++)
             {
                 _inventoryButtons[0].OnInteract();
                 yield return new WaitForSeconds(0.1f);
             }
-            for (int i = 0; i < 2; i++)
-            {
-                _inventoryButtons[1].OnInteract();
-                yield return new WaitForSeconds(0.1f);
-            }
-            _inventoryButtons[5].OnInteract();
+            // 2x Wooden Planks -> 4x Sticks
+            _inventoryButtons[1].OnInteract();
             yield return new WaitForSeconds(0.1f);
-            _inventoryButtons[10].OnInteract();
+            // 2x Sticks & 3x Wooden Planks -> 1x Wooden Pickaxe
+            _inventoryButtons[5].OnInteract();
             yield return new WaitForSeconds(0.1f);
             _actionButtons[5].OnInteract();
             while (_isAnimating) { yield return true; }
-            while (_materialValues[19] < 16)
+            // Gather minimum of 12x Cobblestone
+            while (_materialValues[19] < 12)
             {
                 if (_playerHunger == 1)
                 {
@@ -2736,14 +2733,8 @@ public class MinecraftSurvival : MonoBehaviour
                 _resourceButtons[1].OnInteract();
                 yield return new WaitForSeconds(0.1f);
             }
-            if (_playerHunger == 1)
-            {
-                _actionButtons[6].OnInteract();
-                yield return new WaitForSeconds(0.1f);
-            }
-            _resourceButtons[5].OnInteract();
-            yield return new WaitForSeconds(0.1f);
-            while (_materialValues[20] < 15)
+            // Gather minimum of 5x Coal
+            while (_materialValues[20] < 5)
             {
                 if (_playerHunger == 1)
                 {
@@ -2755,13 +2746,16 @@ public class MinecraftSurvival : MonoBehaviour
             }
             _actionButtons[5].OnInteract();
             while (_isAnimating) { yield return true; }
+            // 8x Cobblestone -> 1x Furnace
             _inventoryButtons[2].OnInteract();
             yield return new WaitForSeconds(0.1f);
+            // 1x Wooden Pickaxe & 4x Cobblestone -> 1x Stone Pickaxe
             _inventoryButtons[6].OnInteract();
             yield return new WaitForSeconds(0.1f);
             _actionButtons[5].OnInteract();
             while (_isAnimating) { yield return true; }
-            while (_materialValues[21] < 11)
+            // Gather a minimum of 5x Iron Ore
+            while (_materialValues[21] < 5)
             {
                 if (_playerHunger == 1)
                 {
@@ -2773,18 +2767,19 @@ public class MinecraftSurvival : MonoBehaviour
             }
             _actionButtons[5].OnInteract();
             while (_isAnimating) { yield return true; }
-            while (_materialValues[3] < 11)
+            // Craft a minimum of 5 Iron Ingots
+            while (_materialValues[3] < 5)
             {
                 _inventoryButtons[3].OnInteract();
                 yield return new WaitForSeconds(0.1f);
             }
+            // 1x Stone Pickaxe & 5x Iron Ingots -> 1x Iron Pickaxe
             _inventoryButtons[7].OnInteract();
-            yield return new WaitForSeconds(0.1f);
-            _inventoryButtons[19].OnInteract();
             yield return new WaitForSeconds(0.1f);
             _actionButtons[5].OnInteract();
             while (_isAnimating) { yield return true; }
-            while (_materialValues[22] < 36)
+            // Gather a minimum of 24x Diamonds
+            while (_materialValues[22] < 24)
             {
                 if (_playerHunger == 1)
                 {
@@ -2796,33 +2791,19 @@ public class MinecraftSurvival : MonoBehaviour
             }
             _actionButtons[5].OnInteract();
             while (_isAnimating) { yield return true; }
-            _inventoryButtons[8].OnInteract();
-            yield return new WaitForSeconds(0.1f);
+            // 24x Diamonds -> 1x Diamond Armor
             _inventoryButtons[16].OnInteract();
             yield return new WaitForSeconds(0.1f);
+            // 2x Wooden Planks & 1x Sticks -> 1x Wooden Sword
             _inventoryButtons[11].OnInteract();
-            yield return new WaitForSeconds(0.1f);
-            _inventoryButtons[12].OnInteract();
-            yield return new WaitForSeconds(0.1f);
-            _inventoryButtons[13].OnInteract();
-            yield return new WaitForSeconds(0.1f);
-            _inventoryButtons[14].OnInteract();
             yield return new WaitForSeconds(0.1f);
             _actionButtons[5].OnInteract();
             while (_isAnimating) { yield return true; }
-            while (_materialValues[24] < 10)
+            // Gather a minimum of 5x Raw Beef
+            while (_materialValues[24] < 5)
             {
                 if (_playerHunger == 1)
                 {
-                    if (_materialValues[4] == 0)
-                    {
-                        _actionButtons[5].OnInteract();
-                        while (_isAnimating) { yield return true; }
-                        _inventoryButtons[4].OnInteract();
-                        yield return new WaitForSeconds(0.1f);
-                        _actionButtons[5].OnInteract();
-                        while (_isAnimating) { yield return true; }
-                    }
                     _actionButtons[6].OnInteract();
                     yield return new WaitForSeconds(0.1f);
                 }
@@ -2836,18 +2817,227 @@ public class MinecraftSurvival : MonoBehaviour
                     {
                         _actionButtons[3].OnInteract();
                         yield return new WaitForSeconds(0.1f);
+                        if (_gMonsterIndex == 3 && _playerHealth < 12 && _materialValues[4] > 0)
+                        {
+                            _actionButtons[4].OnInteract();
+                            yield return new WaitForSeconds(0.1f);
+                        }
+                    }
+                }
+            }
+            // Gather a minimum of 5x Coal
+            while (_materialValues[20] < 5)
+            {
+                if (_playerHunger == 1)
+                {
+                    _actionButtons[6].OnInteract();
+                    yield return new WaitForSeconds(0.1f);
+                }
+                _resourceButtons[2].OnInteract();
+                yield return new WaitForSeconds(0.1f);
+                if (_fightStarted)
+                {
+                    _resourceButtons[2].OnHighlightEnded();
+                    while (_isAnimating) { yield return true; }
+                    while (_gMonsterHealth > 0)
+                    {
+                        _actionButtons[3].OnInteract();
+                        yield return new WaitForSeconds(0.1f);
+                        if (_gMonsterIndex == 3 && _playerHealth < 12 && _materialValues[4] > 0)
+                        {
+                            _actionButtons[4].OnInteract();
+                            yield return new WaitForSeconds(0.1f);
+                        }
                     }
                 }
             }
             _actionButtons[5].OnInteract();
             while (_isAnimating) { yield return true; }
-            while (_materialValues[4] < 10)
+            // Craft as many Cooked Beef as we can
+            while (_materialValues[24] > 0 && _materialValues[20] > 0)
             {
                 _inventoryButtons[4].OnInteract();
                 yield return new WaitForSeconds(0.1f);
             }
             _actionButtons[5].OnInteract();
             while (_isAnimating) { yield return true; }
+            if (_playerHunger == 1)
+            {
+                _actionButtons[6].OnInteract();
+                yield return new WaitForSeconds(0.1f);
+            }
+            // Gather 2x Log
+            _resourceButtons[0].OnInteract();
+            yield return new WaitForSeconds(0.1f);
+            if (_fightStarted)
+            {
+                _resourceButtons[0].OnHighlightEnded();
+                while (_isAnimating) { yield return true; }
+                while (_gMonsterHealth > 0)
+                {
+                    _actionButtons[3].OnInteract();
+                    yield return new WaitForSeconds(0.1f);
+                    if (_gMonsterIndex == 3 && _playerHealth < 12 && _materialValues[4] > 0)
+                    {
+                        _actionButtons[4].OnInteract();
+                        yield return new WaitForSeconds(0.1f);
+                    }
+                }
+            }
+            // Gather a minimum of 4x Cobblestone
+            while (_materialValues[19] < 4)
+            {
+                if (_playerHunger == 1)
+                {
+                    _actionButtons[6].OnInteract();
+                    yield return new WaitForSeconds(0.1f);
+                }
+                _resourceButtons[1].OnInteract();
+                yield return new WaitForSeconds(0.1f);
+                if (_fightStarted)
+                {
+                    _resourceButtons[1].OnHighlightEnded();
+                    while (_isAnimating) { yield return true; }
+                    while (_gMonsterHealth > 0)
+                    {
+                        _actionButtons[3].OnInteract();
+                        yield return new WaitForSeconds(0.1f);
+                        if (_gMonsterIndex == 3 && _playerHealth < 12 && _materialValues[4] > 0)
+                        {
+                            _actionButtons[4].OnInteract();
+                            yield return new WaitForSeconds(0.1f);
+                        }
+                    }
+                }
+            }
+            // Gather a minimum of 6x Coal
+            while (_materialValues[20] < 6)
+            {
+                if (_playerHunger == 1)
+                {
+                    _actionButtons[6].OnInteract();
+                    yield return new WaitForSeconds(0.1f);
+                }
+                _resourceButtons[2].OnInteract();
+                yield return new WaitForSeconds(0.1f);
+                if (_fightStarted)
+                {
+                    _resourceButtons[2].OnHighlightEnded();
+                    while (_isAnimating) { yield return true; }
+                    while (_gMonsterHealth > 0)
+                    {
+                        _actionButtons[3].OnInteract();
+                        yield return new WaitForSeconds(0.1f);
+                        if (_gMonsterIndex == 3 && _playerHealth < 12 && _materialValues[4] > 0)
+                        {
+                            _actionButtons[4].OnInteract();
+                            yield return new WaitForSeconds(0.1f);
+                        }
+                    }
+                }
+            }
+            // Gather a minimum of 6x Iron Ore
+            while (_materialValues[21] < 6)
+            {
+                if (_playerHunger == 1)
+                {
+                    _actionButtons[6].OnInteract();
+                    yield return new WaitForSeconds(0.1f);
+                }
+                _resourceButtons[3].OnInteract();
+                yield return new WaitForSeconds(0.1f);
+                if (_fightStarted)
+                {
+                    _resourceButtons[3].OnHighlightEnded();
+                    while (_isAnimating) { yield return true; }
+                    while (_gMonsterHealth > 0)
+                    {
+                        _actionButtons[3].OnInteract();
+                        yield return new WaitForSeconds(0.1f);
+                        if (_gMonsterIndex == 3 && _playerHealth < 12 && _materialValues[4] > 0)
+                        {
+                            _actionButtons[4].OnInteract();
+                            yield return new WaitForSeconds(0.1f);
+                        }
+                    }
+                }
+            }
+            // Gather a minimum of 12x Diamond
+            while (_materialValues[22] < 12)
+            {
+                if (_playerHunger == 1)
+                {
+                    _actionButtons[6].OnInteract();
+                    yield return new WaitForSeconds(0.1f);
+                }
+                _resourceButtons[4].OnInteract();
+                yield return new WaitForSeconds(0.1f);
+                if (_fightStarted)
+                {
+                    _resourceButtons[4].OnHighlightEnded();
+                    while (_isAnimating) { yield return true; }
+                    while (_gMonsterHealth > 0)
+                    {
+                        _actionButtons[3].OnInteract();
+                        yield return new WaitForSeconds(0.1f);
+                        if (_gMonsterIndex == 3 && _playerHealth < 12 && _materialValues[4] > 0)
+                        {
+                            _actionButtons[4].OnInteract();
+                            yield return new WaitForSeconds(0.1f);
+                        }
+                    }
+                }
+            }
+            _actionButtons[5].OnInteract();
+            while (_isAnimating) { yield return true; }
+            // 1x Log -> 4x Wooden Planks
+            _inventoryButtons[0].OnInteract();
+            yield return new WaitForSeconds(0.1f);
+            // 2x Wooden Planks -> 4x Sticks
+            _inventoryButtons[1].OnInteract();
+            yield return new WaitForSeconds(0.1f);
+            // 1x Wooden Planks & 2x Sticks -> 1x Wooden Shovel
+            _inventoryButtons[10].OnInteract();
+            yield return new WaitForSeconds(0.1f);
+            // 1x Wooden Sword & 4x Cobblestone -> 1x Stone Sword
+            _inventoryButtons[12].OnInteract();
+            yield return new WaitForSeconds(0.1f);
+            // Craft a minimum of 6 Iron Ingots
+            while (_materialValues[3] < 6)
+            {
+                _inventoryButtons[3].OnInteract();
+                yield return new WaitForSeconds(0.1f);
+            }
+            // 1x Stone Sword & 5x Iron Ingots -> 1x Iron Sword
+            _inventoryButtons[13].OnInteract();
+            yield return new WaitForSeconds(0.1f);
+            // 1x Iron Sword & 6x Diamonds -> 1x Diamond Sword
+            _inventoryButtons[14].OnInteract();
+            yield return new WaitForSeconds(0.1f);
+            // 1x Iron Pickaxe & 6x Diamonds -> 1x Diamond Pickaxe
+            _inventoryButtons[8].OnInteract();
+            yield return new WaitForSeconds(0.1f);
+            _actionButtons[5].OnInteract();
+            while (_isAnimating) { yield return true; }
+            if (_playerHunger == 1)
+            {
+                _actionButtons[6].OnInteract();
+                yield return new WaitForSeconds(0.1f);
+            }
+            // Gather 1x Gravel
+            _resourceButtons[5].OnInteract();
+            yield return new WaitForSeconds(0.1f);
+            if (_fightStarted)
+            {
+                _resourceButtons[5].OnHighlightEnded();
+                while (_isAnimating) { yield return true; }
+                while (_gMonsterHealth > 0)
+                {
+                    _actionButtons[3].OnInteract();
+                    yield return new WaitForSeconds(0.1f);
+                }
+            }
+            // Gather 14x Obsidian
             while (_materialValues[25] < 14)
             {
                 if (_playerHunger == 1)
@@ -2868,14 +3058,29 @@ public class MinecraftSurvival : MonoBehaviour
                     }
                 }
             }
+            _actionButtons[5].OnInteract();
+            while (_isAnimating) { yield return true; }
+            // 1x Flint & 1x Iron Ingots -> 1x Flint and Steel
+            _inventoryButtons[19].OnInteract();
+            yield return new WaitForSeconds(0.1f);
+            _actionButtons[5].OnInteract();
+            while (_isAnimating) { yield return true; }
+            // Go to The Nether
             _actionButtons[1].OnInteract();
             yield return new WaitForSeconds(0.1f);
+            // Gather useless resources until we have received 6x Blaze Rods and 12x Ender Pearls
             while (_materialValues[32] < 6 || _materialValues[33] < 12)
             {
                 if (_materialValues[4] == 1)
                 {
                     _actionButtons[0].OnInteract();
                     yield return new WaitForSeconds(0.1f);
+                    if (_playerHunger < 3)
+                    {
+                        _actionButtons[6].OnInteract();
+                        yield return new WaitForSeconds(0.1f);
+                    }
+                    // Gather one set of Coal
                     _resourceButtons[2].OnInteract();
                     yield return new WaitForSeconds(0.1f);
                     if (_fightStarted)
@@ -2888,6 +3093,7 @@ public class MinecraftSurvival : MonoBehaviour
                             yield return new WaitForSeconds(0.1f);
                         }
                     }
+                    // Gather one set of Raw Beef
                     _resourceButtons[7].OnInteract();
                     yield return new WaitForSeconds(0.1f);
                     if (_fightStarted)
@@ -2902,8 +3108,12 @@ public class MinecraftSurvival : MonoBehaviour
                     }
                     _actionButtons[5].OnInteract();
                     while (_isAnimating) { yield return true; }
-                    _inventoryButtons[4].OnInteract();
-                    yield return new WaitForSeconds(0.1f);
+                    // Craft as many Cooked Beef as we can
+                    while (_materialValues[24] > 0 && _materialValues[20] > 0)
+                    {
+                        _inventoryButtons[4].OnInteract();
+                        yield return new WaitForSeconds(0.1f);
+                    }
                     _actionButtons[5].OnInteract();
                     while (_isAnimating) { yield return true; }
                     _actionButtons[1].OnInteract();
@@ -2958,11 +3168,13 @@ public class MinecraftSurvival : MonoBehaviour
             }
             _actionButtons[5].OnInteract();
             while (_isAnimating) { yield return true; }
+            // 6x Blaze Rods -> 12x Blaze Powder
             for (int i = 0; i < 6; i++)
             {
                 _inventoryButtons[17].OnInteract();
                 yield return new WaitForSeconds(0.1f);
             }
+            // 12 Blaze Powder & 12x Ender Pearl -> 12x Eye of Ender
             for (int i = 0; i < 12; i++)
             {
                 _inventoryButtons[18].OnInteract();
